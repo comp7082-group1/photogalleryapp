@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <item name="title_search" type="id"></item>
+    <item name="search_fromDate" type="id"></item>
+    <item name="search_toDate" type="id"></item>
+    <item name="search_fromDateLabel" type="id"></item>
+    <item name="search_toDateLabel" type="id" />
+</resources>
