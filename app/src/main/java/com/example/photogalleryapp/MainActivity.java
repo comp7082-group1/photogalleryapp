@@ -63,16 +63,17 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
         ImageView imageView = findViewById(R.id.main_imageView);
 
         if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
+            // display image
             if (data != null && data.getExtras() != null) {
                 Bitmap imageBitmap = (Bitmap) data.getExtras().get("data");
                 imageView.setImageBitmap(imageBitmap);
-                // display time
-                TextView txtTimeStamp = findViewById(R.id.main_TimeStamp);
-                txtTimeStamp.setText(new Date().toString());
-                // display location
-                TextView txtLocation = findViewById(R.id.main_LocationText);
-                txtLocation.setText(locationText);
             }
+            // display time
+            TextView txtTimeStamp = findViewById(R.id.main_TimeStamp);
+            txtTimeStamp.setText(new Date().toString());
+            // display location
+            TextView txtLocation = findViewById(R.id.main_LocationText);
+            txtLocation.setText(locationText);
         }
     }
 

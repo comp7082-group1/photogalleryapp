@@ -2,7 +2,6 @@ package com.example.photogalleryapp;
 
 import android.app.Activity;
 import android.app.Instrumentation;
-
 import androidx.test.espresso.intent.rule.IntentsTestRule;
 import androidx.test.runner.AndroidJUnit4;
 
@@ -45,13 +44,15 @@ public class CameraTest {
     public void ensureTimestampDisplayedOnSnapButtonClick() {
         onView(withId(R.id.main_TimeStamp)).check(matches((withText("timeStamp"))));
         onView(withId(R.id.main_SnapButton)).perform(click());
-        onView(withId(R.id.main_TimeStamp)).check(matches(not(withText(""))));
+        intended(toPackage("com.android.camera2"));
+        onView(withId(R.id.main_TimeStamp)).check(matches(not(withText("timeStamp"))));
     }
 
     @Test
     public void ensureCoordinatesDisplayedOnSnapButtonClick() {
         onView(withId(R.id.main_LocationText)).check(matches((withText("location"))));
         onView(withId(R.id.main_SnapButton)).perform(click());
-        onView(withId(R.id.main_LocationText)).check(matches(not(withText(""))));
+        intended(toPackage("com.android.camera2"));
+        onView(withId(R.id.main_LocationText)).check(matches(not(withText("location"))));
     }
 }
