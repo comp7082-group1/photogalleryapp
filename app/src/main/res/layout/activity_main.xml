@@ -51,6 +51,7 @@
         android:layout_marginStart="8dp"
         android:layout_marginEnd="8dp"
         android:layout_marginBottom="36dp"
+        android:onClick="snapPhoto"
         android:text="Snap"
         app:layout_constraintBottom_toTopOf="@+id/main_SearchButton"
         app:layout_constraintEnd_toStartOf="@+id/main_RightButton"
