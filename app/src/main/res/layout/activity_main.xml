@@ -97,4 +97,14 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/main_TimeStamp" />
 
+    <TextView
+        android:id="@+id/main_LocationText"
+        android:layout_width="159dp"
+        android:layout_height="50dp"
+        android:ems="10"
+        android:inputType="textPersonName"
+        android:text="location"
+        tools:layout_editor_absoluteX="200dp"
+        tools:layout_editor_absoluteY="437dp" />
+
 </android.support.constraint.ConstraintLayout>
