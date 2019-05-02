@@ -8,10 +8,10 @@
 
     <ImageView
         android:id="@+id/main_imageView"
-        android:layout_width="343dp"
-        android:layout_height="380dp"
+        android:layout_width="344dp"
+        android:layout_height="323dp"
         android:layout_marginStart="8dp"
-        android:layout_marginTop="48dp"
+        android:layout_marginTop="16dp"
         android:layout_marginEnd="8dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.538"
@@ -24,13 +24,13 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
-        android:layout_marginTop="20dp"
+        android:layout_marginTop="10dp"
         android:layout_marginEnd="8dp"
         android:text="timeStamp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.498"
+        app:layout_constraintHorizontal_bias="0.504"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/main_imageView" />
+        app:layout_constraintTop_toBottomOf="@+id/main_LocationText" />
 
     <Button
         android:id="@+id/main_SearchButton"
@@ -49,26 +49,28 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
+        android:layout_marginTop="20dp"
         android:layout_marginEnd="8dp"
-        android:layout_marginBottom="36dp"
+        android:layout_marginBottom="8dp"
         android:onClick="snapPhoto"
         android:text="Snap"
         app:layout_constraintBottom_toTopOf="@+id/main_SearchButton"
         app:layout_constraintEnd_toStartOf="@+id/main_RightButton"
-        app:layout_constraintHorizontal_bias="0.492"
-        app:layout_constraintStart_toEndOf="@+id/main_LeftButton" />
+        app:layout_constraintStart_toEndOf="@+id/main_LeftButton"
+        app:layout_constraintTop_toBottomOf="@+id/main_CaptionEditText" />
 
     <Button
         android:id="@+id/main_RightButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
-        android:layout_marginEnd="32dp"
+        android:layout_marginEnd="28dp"
         android:layout_marginBottom="8dp"
         android:text="Right"
         app:layout_constraintBottom_toTopOf="@+id/main_SearchButton"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/main_CaptionEditText" />
+        app:layout_constraintTop_toBottomOf="@+id/main_CaptionEditText"
+        app:layout_constraintVertical_bias="0.545" />
 
     <Button
         android:id="@+id/main_LeftButton"
@@ -80,31 +82,35 @@
         android:text="Left"
         app:layout_constraintBottom_toTopOf="@+id/main_SearchButton"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/main_CaptionEditText" />
+        app:layout_constraintTop_toBottomOf="@+id/main_CaptionEditText"
+        app:layout_constraintVertical_bias="0.545" />
 
     <EditText
         android:id="@+id/main_CaptionEditText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
+        android:layout_marginTop="28dp"
         android:layout_marginEnd="8dp"
-        android:layout_marginBottom="8dp"
         android:ems="10"
         android:hint="Add a caption"
         android:inputType="textPersonName"
-        app:layout_constraintBottom_toTopOf="@+id/main_SnapButton"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/main_TimeStamp" />
 
     <TextView
         android:id="@+id/main_LocationText"
-        android:layout_width="159dp"
-        android:layout_height="50dp"
+        android:layout_width="67dp"
+        android:layout_height="22dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginEnd="8dp"
         android:ems="10"
         android:inputType="textPersonName"
         android:text="location"
-        tools:layout_editor_absoluteX="200dp"
-        tools:layout_editor_absoluteY="437dp" />
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/main_imageView" />
 
 </android.support.constraint.ConstraintLayout>
