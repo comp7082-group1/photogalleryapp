@@ -9,13 +9,16 @@
     <TextView
         android:id="@+id/title_search"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_height="41dp"
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
-        android:layout_marginStart="40dp"
-        android:layout_marginTop="16dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="28dp"
+        android:layout_marginEnd="16dp"
         android:text="Photogallery Application"
         android:textSize="30sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.54"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -27,12 +30,12 @@
         android:layout_alignEnd="@+id/title_search"
         android:layout_alignRight="@+id/title_search"
         android:layout_marginStart="8dp"
-        android:layout_marginTop="120dp"
-        android:layout_marginEnd="8dp"
+        android:layout_marginTop="128dp"
+        android:layout_marginEnd="24dp"
         android:ems="10"
         android:inputType="date"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.506"
+        app:layout_constraintHorizontal_bias="0.673"
         app:layout_constraintStart_toEndOf="@+id/search_fromDateLabel"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -43,8 +46,8 @@
         android:layout_alignStart="@+id/title_search"
         android:layout_alignLeft="@+id/title_search"
         android:layout_alignBottom="@+id/search_fromDate"
-        android:layout_marginStart="36dp"
-        android:layout_marginTop="132dp"
+        android:layout_marginStart="44dp"
+        android:layout_marginTop="148dp"
         android:text="From Date: "
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -57,12 +60,12 @@
         android:layout_alignEnd="@+id/search_fromDate"
         android:layout_alignRight="@+id/search_fromDate"
         android:layout_marginStart="8dp"
-        android:layout_marginTop="36dp"
-        android:layout_marginEnd="40dp"
+        android:layout_marginTop="32dp"
+        android:layout_marginEnd="24dp"
         android:ems="10"
         android:inputType="date"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.902"
+        app:layout_constraintHorizontal_bias="0.72"
         app:layout_constraintStart_toEndOf="@+id/search_toDateLabel"
         app:layout_constraintTop_toBottomOf="@+id/search_fromDate" />
 
@@ -73,8 +76,8 @@
         android:layout_alignStart="@+id/search_fromDateLabel"
         android:layout_alignLeft="@+id/search_fromDateLabel"
         android:layout_alignTop="@+id/search_toDate"
-        android:layout_marginStart="36dp"
-        android:layout_marginTop="68dp"
+        android:layout_marginStart="44dp"
+        android:layout_marginTop="52dp"
         android:text="To Date: "
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/search_fromDateLabel" />
@@ -88,12 +91,12 @@
         android:layout_alignParentBottom="true"
         android:layout_marginStart="8dp"
         android:layout_marginEnd="8dp"
-        android:layout_marginBottom="24dp"
+        android:layout_marginBottom="36dp"
         android:onClick="cancel"
         android:text="Cancel"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.662"
+        app:layout_constraintHorizontal_bias="0.488"
         app:layout_constraintStart_toEndOf="@+id/search_search" />
 
     <Button
@@ -101,13 +104,34 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:layout_marginStart="76dp"
-        android:layout_marginBottom="24dp"
+        android:layout_marginStart="80dp"
+        android:layout_marginBottom="36dp"
         android:layout_toEndOf="@+id/search_toDateLabel"
         android:layout_toRightOf="@+id/search_toDateLabel"
         android:onClick="search"
         android:text="Search"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
+
+    <TextView
+        android:id="@+id/textView2"
+        android:layout_width="66dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="44dp"
+        android:layout_marginTop="52dp"
+        android:text="Keywords:"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/search_toDateLabel" />
+
+    <EditText
+        android:id="@+id/editText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="48dp"
+        android:layout_marginTop="32dp"
+        android:ems="10"
+        android:inputType="textPersonName"
+        app:layout_constraintStart_toEndOf="@+id/textView2"
+        app:layout_constraintTop_toBottomOf="@+id/search_toDate" />
 
 </android.support.constraint.ConstraintLayout>
