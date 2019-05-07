@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">PhotoGalleryApp</string>
+    <string name="text_hello_word">Hello World!</string>
 </resources>
