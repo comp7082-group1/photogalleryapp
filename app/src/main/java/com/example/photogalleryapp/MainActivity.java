@@ -44,18 +44,14 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            return;
-        }
-        locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 10, 0, this);
 
+        Button btnLeft = findViewById(R.id.main_LeftButton);
+        Button btnRight = findViewById(R.id.main_RightButton);
 
-//        Button btnLeft = (Button) findViewById(R.id.main_LeftButton);
-//        Button btnRight = (Button) findViewById(R.id.main_RightButton);
-//        btnLeft.setOnClickListener(this);
-//        btnRight.setOnClickListener(this);
+        btnLeft.setOnClickListener(this);
+        btnRight.setOnClickListener(this);
 
+        Log.d("Before Loading Gallery", "Loading from");
         loadGallery();
     }
 
@@ -68,11 +64,13 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
         File[] fList = dir.listFiles();
         if (fList != null) {
             for (File f : dir.listFiles()) {
-
+                Log.d("Loading File", "File: " + f.getAbsolutePath());
                 photoGallery.add(f.getPath());
             }
         }
-        displayPhoto(photoGallery.get(0));
+        if(!photoGallery.isEmpty()) {
+            displayPhoto(photoGallery.get(0));
+        }
 
     }
 
@@ -151,6 +149,7 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
 
             Bitmap imageBitmap = (Bitmap) data.getExtras().get("data");
             try (FileOutputStream out = new FileOutputStream(image)) {
+                Log.d("Writing to bit map", "Creating image.");
                 imageBitmap.compress(Bitmap.CompressFormat.JPEG, 100, out); // bmp is your Bitmap instance
             } catch (IOException e) {
                 e.printStackTrace();
