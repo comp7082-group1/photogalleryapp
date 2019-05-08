@@ -34,6 +34,7 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
 
     private String locationText;
     protected LocationManager locationManager;
+    static final int SEARCH_ACTIVITY_REQUEST_CODE = 0;
     static final int REQUEST_IMAGE_CAPTURE = 1;
     protected ArrayList<String> photoGallery = null;
     protected Integer currentPhotoIndex = 0;
@@ -44,23 +45,31 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-
         Button btnLeft = findViewById(R.id.main_LeftButton);
         Button btnRight = findViewById(R.id.main_RightButton);
+        Button btnSearch = findViewById(R.id.main_searchButton);
 
         btnLeft.setOnClickListener(this);
         btnRight.setOnClickListener(this);
+        btnSearch.setOnClickListener(filterListener);
 
         Log.d("Before Loading Gallery", "Loading from");
         loadGallery();
     }
+
+    private View.OnClickListener filterListener = new View.OnClickListener() {
+        public void onClick(View v) {
+            Intent i = new Intent(MainActivity.this, SearchActivity.class);
+            startActivityForResult(i, SEARCH_ACTIVITY_REQUEST_CODE);
+        }
+    };
 
     public void loadGallery() {
         File dir = MyApplication.getAppContext().getFilesDir();
 
         Log.d("Loading Gallery", "Loading from: " + dir.getPath());
 
-        photoGallery = new ArrayList<String>();
+        photoGallery = new ArrayList<>();
         File[] fList = dir.listFiles();
         if (fList != null) {
             for (File f : dir.listFiles()) {
