@@ -33,12 +33,13 @@
         app:layout_constraintTop_toBottomOf="@+id/main_LocationText" />
 
     <Button
-        android:id="@+id/main_SearchButton"
+        android:id="@+id/main_searchButton"
         android:layout_width="342dp"
         android:layout_height="47dp"
         android:layout_marginStart="8dp"
         android:layout_marginEnd="8dp"
         android:layout_marginBottom="24dp"
+        android:onClick="launchSearch"
         android:text="Search"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -54,7 +55,7 @@
         android:layout_marginBottom="8dp"
         android:onClick="snapPhoto"
         android:text="Snap"
-        app:layout_constraintBottom_toTopOf="@+id/main_SearchButton"
+        app:layout_constraintBottom_toTopOf="@+id/main_searchButton"
         app:layout_constraintEnd_toStartOf="@+id/main_RightButton"
         app:layout_constraintStart_toEndOf="@+id/main_LeftButton"
         app:layout_constraintTop_toBottomOf="@+id/main_CaptionEditText" />
@@ -67,7 +68,7 @@
         android:layout_marginEnd="28dp"
         android:layout_marginBottom="8dp"
         android:text="Right"
-        app:layout_constraintBottom_toTopOf="@+id/main_SearchButton"
+        app:layout_constraintBottom_toTopOf="@+id/main_searchButton"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/main_CaptionEditText"
         app:layout_constraintVertical_bias="0.545" />
@@ -80,7 +81,7 @@
         android:layout_marginTop="8dp"
         android:layout_marginBottom="8dp"
         android:text="Left"
-        app:layout_constraintBottom_toTopOf="@+id/main_SearchButton"
+        app:layout_constraintBottom_toTopOf="@+id/main_searchButton"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/main_CaptionEditText"
         app:layout_constraintVertical_bias="0.545" />
