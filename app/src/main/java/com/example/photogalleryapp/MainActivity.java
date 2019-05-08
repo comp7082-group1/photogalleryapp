@@ -54,7 +54,11 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
         btnSearch.setOnClickListener(filterListener);
 
         Log.d("Before Loading Gallery", "Loading from");
-        loadGallery();
+
+        Date minDate = new Date(Long.MIN_VALUE);
+        Date maxDate = new Date(Long.MAX_VALUE);
+
+        loadGallery(minDate, maxDate);
     }
 
     private View.OnClickListener filterListener = new View.OnClickListener() {
@@ -64,7 +68,7 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
         }
     };
 
-    public void loadGallery() {
+    public void loadGallery(Date minDate, Date maxDate) {
         File dir = MyApplication.getAppContext().getFilesDir();
 
         Log.d("Loading Gallery", "Loading from: " + dir.getPath());
@@ -83,13 +87,8 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
         if(!photoGallery.isEmpty()) {
             displayPhoto(photoGallery.get(0));
         }
-
     }
 
-    public void launchSearch(View v) {
-        Intent i = new Intent(this, SearchActivity.class);
-        startActivity(i);
-    }
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.main_RightButton:
@@ -150,8 +149,25 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         ImageView imageView = findViewById(R.id.main_imageView);
 
+        if (requestCode == SEARCH_ACTIVITY_REQUEST_CODE) {
+            if (resultCode == RESULT_OK) {
+                Log.d("createImageFile", data.getStringExtra("STARTDATE"));
+                Log.d("createImageFile", data.getStringExtra("ENDDATE"));
+
+//                Date minDate = new Date();
+//                minDate.
+//                Date maxDate = new Date(Long.MAX_VALUE);
+
+                loadGallery(new Date(), new Date());
+                Log.d("onCreate, size", Integer.toString(photoGallery.size()));
+                currentPhotoIndex = 0;
+                currentPhotoPath = photoGallery.get(currentPhotoIndex);
+                displayPhoto(currentPhotoPath);
+            }
+        }
+
         if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
-            
+
             File image = null;
             try {
                 image = createImageFile();
