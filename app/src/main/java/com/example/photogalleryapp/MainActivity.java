@@ -26,6 +26,8 @@ import android.widget.Toast;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.text.DateFormat;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -79,6 +81,19 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
             for (File f : dir.listFiles()) {
                 String extension = f.getAbsolutePath().substring(f.getAbsolutePath().lastIndexOf("."));
                 Log.d("File Extension", extension);
+
+                int filePathLength = f.getAbsolutePath().length();
+
+                DateFormat format = new SimpleDateFormat("yyyyMMdd");
+                Date fileDate = null;
+                String fileDateStr =  f.getAbsolutePath().substring(filePathLength-8);
+                
+                try {
+                    fileDate = format.parse(fileDateStr);
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }
+                // TODO: 5/8/2019 Compare fileDate with minDate and maxDate to see if it is within bounds 
                 if(extension.equals(".jpg")) {
                     photoGallery.add(f.getPath());
                 }
@@ -136,7 +151,7 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
     }
 
     public File createImageFile() throws IOException {
-        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
+        String timeStamp = new SimpleDateFormat("yyyyMMdd").format(new Date());
         String imageFileName = "JPEG_" + timeStamp + "_";
         File dir = MyApplication.getAppContext().getFilesDir();
         File image = File.createTempFile(imageFileName, ".jpg", dir );
@@ -154,8 +169,20 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
                 Log.d("createImageFile", data.getStringExtra("STARTDATE"));
                 Log.d("createImageFile", data.getStringExtra("ENDDATE"));
 
+                // TODO: 5/8/2019 Check minDate and maxDate is being populated correctly
+                DateFormat format = new SimpleDateFormat("yyyyMMdd");
+                Date minDate = null;
+                Date maxDate = null;
+                
+                try {
+                    minDate = format.parse(data.getStringExtra("STARTDATE"));
+                    maxDate = format.parse(data.getStringExtra("ENDDATE"));
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }
 
-                loadGallery(new Date(), new Date());
+
+                loadGallery(minDate, maxDate);
                 Log.d("onCreate, size", Integer.toString(photoGallery.size()));
                 currentPhotoIndex = 0;
                 currentPhotoPath = photoGallery.get(currentPhotoIndex);
