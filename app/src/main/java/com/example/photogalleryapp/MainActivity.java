@@ -19,6 +19,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -41,6 +42,7 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
     protected ArrayList<String> photoGallery = null;
     protected Integer currentPhotoIndex = 0;
     protected String currentPhotoPath = null;
+    protected Boolean resultFlag = Boolean.TRUE;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,9 +59,9 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
 
         Log.d("Before Loading Gallery", "Loading from");
 
+        DateFormat format = new SimpleDateFormat("yyyyMMdd");
         Date minDate = new Date(Long.MIN_VALUE);
         Date maxDate = new Date(Long.MAX_VALUE);
-
         loadGallery(minDate, maxDate);
     }
 
@@ -86,8 +88,10 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
 
                 DateFormat format = new SimpleDateFormat("yyyyMMdd");
                 Date fileDate = null;
-                String fileDateStr =  f.getAbsolutePath().substring(filePathLength-8);
-                
+                String fileDateStr = f.getAbsolutePath().substring(filePathLength-32, filePathLength-24);
+                System.out.println(f.getAbsolutePath());
+                System.out.println(f.getAbsolutePath().substring(filePathLength - 33));
+                System.out.println(f.getAbsolutePath().substring(filePathLength-32, filePathLength-24));
                 try {
                     fileDate = format.parse(fileDateStr);
                 } catch (ParseException e) {
@@ -95,12 +99,41 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
                 }
                 // TODO: 5/8/2019 Compare fileDate with minDate and maxDate to see if it is within bounds 
                 if(extension.equals(".jpg")) {
-                    photoGallery.add(f.getPath());
+                    if (fileDate.compareTo(minDate) >= 0 && fileDate.compareTo(maxDate) <= 0 ) {
+                        System.out.println("adding " + f.getPath() + " to gallery");
+                        photoGallery.add(f.getPath());
+                    }
                 }
             }
         }
+        ImageView iv = findViewById(R.id.main_imageView);
+        TextView noResult = findViewById(R.id.main_noResults);
+        TextView dateView = findViewById(R.id.main_TimeStamp);
+        Button btnLeft = findViewById(R.id.main_LeftButton);
+        Button btnRight = findViewById(R.id.main_RightButton);
+        EditText caption = findViewById(R.id.main_CaptionEditText);
+
         if(!photoGallery.isEmpty()) {
-            displayPhoto(photoGallery.get(0));
+
+            iv.setVisibility(View.VISIBLE);
+            dateView.setVisibility(View.VISIBLE);
+            noResult.setVisibility(View.INVISIBLE);
+            btnLeft.setVisibility(View.VISIBLE);
+            btnRight.setVisibility(View.VISIBLE);
+            caption.setVisibility(View.VISIBLE);
+
+            System.out.println("displaying first image " + photoGallery.get(0));
+            currentPhotoPath = photoGallery.get(0);
+            displayPhoto(currentPhotoPath);
+        } else {
+            resultFlag = Boolean.FALSE;
+
+            iv.setVisibility(View.INVISIBLE);
+            dateView.setVisibility(View.INVISIBLE);
+            noResult.setVisibility(View.VISIBLE);
+            btnLeft.setVisibility(View.INVISIBLE);
+            btnRight.setVisibility(View.INVISIBLE);
+            caption.setVisibility(View.INVISIBLE);
         }
     }
 
@@ -137,8 +170,27 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
     }
 
     public void displayPhoto(String path) {
-        ImageView iv = findViewById(R.id.main_imageView);
-        iv.setImageBitmap(BitmapFactory.decodeFile(path));
+        if (currentPhotoPath != null) {
+
+            ImageView iv = findViewById(R.id.main_imageView);
+            iv.setImageBitmap(BitmapFactory.decodeFile(path));
+
+            int pathLength = path.length();
+            DateFormat formatter = new SimpleDateFormat("yyyyMMdd");
+            DateFormat formatPrint = new SimpleDateFormat("yyyy/MM/dd");
+            Date fileDate = null;
+            String fileDateStr = path.substring(pathLength - 32, pathLength - 24);
+            try {
+                fileDate = formatter.parse(fileDateStr);
+                System.out.println(formatPrint.format(fileDate));
+                TextView dateView = findViewById(R.id.main_TimeStamp);
+                dateView.setText(formatPrint.format(fileDate));
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+        }
+
+
     }
 
     public void snapPhoto(View view) {
@@ -169,7 +221,7 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
                 Log.d("createImageFile", data.getStringExtra("STARTDATE"));
                 Log.d("createImageFile", data.getStringExtra("ENDDATE"));
 
-                // TODO: 5/8/2019 Check minDate and maxDate is being populated correctly
+                // TODO: 5/8/2019 Check minDate and maxDate is being populated correctly!!!! Completed = Confirmed
                 DateFormat format = new SimpleDateFormat("yyyyMMdd");
                 Date minDate = null;
                 Date maxDate = null;
@@ -180,13 +232,15 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
                 } catch (ParseException e) {
                     e.printStackTrace();
                 }
-
+                System.out.println(format.format(minDate));
+                System.out.println(format.format(maxDate));
 
                 loadGallery(minDate, maxDate);
-                Log.d("onCreate, size", Integer.toString(photoGallery.size()));
                 currentPhotoIndex = 0;
-                currentPhotoPath = photoGallery.get(currentPhotoIndex);
-                displayPhoto(currentPhotoPath);
+                if (resultFlag) {
+                    currentPhotoPath = photoGallery.get(currentPhotoIndex);
+                    displayPhoto(currentPhotoPath);
+                }
             }
         }
 
