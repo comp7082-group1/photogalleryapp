@@ -64,8 +64,11 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
         File[] fList = dir.listFiles();
         if (fList != null) {
             for (File f : dir.listFiles()) {
-                Log.d("Loading File", "File: " + f.getAbsolutePath());
-                photoGallery.add(f.getPath());
+                String extension = f.getAbsolutePath().substring(f.getAbsolutePath().lastIndexOf("."));
+                Log.d("File Extension", extension);
+                if(extension.equals(".jpg")) {
+                    photoGallery.add(f.getPath());
+                }
             }
         }
         if(!photoGallery.isEmpty()) {
@@ -88,20 +91,25 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
                 previousPhoto(v);
                 break;
         }
+        Log.d("Current Index: ", "" + currentPhotoIndex);
 
         currentPhotoPath = photoGallery.get(currentPhotoIndex);
         displayPhoto(currentPhotoPath);
     }
 
     public void nextPhoto(View v) {
-        if (currentPhotoIndex < photoGallery.size()) {
+        if (currentPhotoIndex < photoGallery.size() - 1) {
             currentPhotoIndex++;
+        } else {
+            currentPhotoIndex = 0;
         }
     }
 
     public void previousPhoto(View v) {
         if (currentPhotoIndex > 0) {
             currentPhotoIndex--;
+        } else {
+            currentPhotoIndex = photoGallery.size() - 1;
         }
     }
 
