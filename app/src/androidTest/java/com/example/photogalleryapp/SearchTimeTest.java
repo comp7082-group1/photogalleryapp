@@ -44,7 +44,7 @@ public class SearchTimeTest {
         timings.addSplit("Main Activity Search Button Pressed");
         onView(withId(R.id.search_fromDate)).perform(typeText("19/01/15"), closeSoftKeyboard());
         onView(withId(R.id.search_toDate)).perform(typeText("19/01/15"), closeSoftKeyboard());
-        onView(withId(R.id.search_keyword)).perform(typeText("Group1"), closeSoftKeyboard());
+        onView(withId(R.id.search_keywordText)).perform(typeText("Group1"), closeSoftKeyboard());
         timings.addSplit("Search Form Populated");
         onView(withId(R.id.search_searchButton)).perform(click());
         timings.addSplit("Search Activity Search Button Pressed");

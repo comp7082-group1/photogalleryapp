@@ -154,9 +154,6 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
                 Log.d("createImageFile", data.getStringExtra("STARTDATE"));
                 Log.d("createImageFile", data.getStringExtra("ENDDATE"));
 
-//                Date minDate = new Date();
-//                minDate.
-//                Date maxDate = new Date(Long.MAX_VALUE);
 
                 loadGallery(new Date(), new Date());
                 Log.d("onCreate, size", Integer.toString(photoGallery.size()));
