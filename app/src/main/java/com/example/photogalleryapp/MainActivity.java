@@ -9,6 +9,7 @@ import android.graphics.BitmapFactory;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
+import android.media.ExifInterface;
 import android.net.Uri;
 import android.os.Environment;
 import android.provider.MediaStore;
@@ -27,8 +28,13 @@ import android.widget.Toast;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+
 import java.text.DateFormat;
 import java.text.ParseException;
+
+import java.io.InputStream;
+import java.net.URI;
+
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -52,10 +58,12 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
         Button btnLeft = findViewById(R.id.main_LeftButton);
         Button btnRight = findViewById(R.id.main_RightButton);
         Button btnSearch = findViewById(R.id.main_searchButton);
+        Button submitComment = findViewById(R.id.main_CommentButton);
 
         btnLeft.setOnClickListener(this);
         btnRight.setOnClickListener(this);
         btnSearch.setOnClickListener(filterListener);
+        submitComment.setOnClickListener(this);
 
         Log.d("Before Loading Gallery", "Loading from");
 
@@ -146,6 +154,9 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
             case R.id.main_LeftButton:
                 previousPhoto(v);
                 break;
+            case R.id.main_CommentButton:
+                submitComment(v);
+                break;
         }
         Log.d("Current Index: ", "" + currentPhotoIndex);
 
@@ -170,10 +181,21 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
     }
 
     public void displayPhoto(String path) {
+
         if (currentPhotoPath != null) {
 
             ImageView iv = findViewById(R.id.main_imageView);
             iv.setImageBitmap(BitmapFactory.decodeFile(path));
+          
+            try {
+              ExifInterface exifInterface = new ExifInterface(path);
+              String comment;
+              comment = exifInterface.getAttribute(ExifInterface.TAG_USER_COMMENT);
+              TextView commentView = findViewById(R.id.main_CaptionEditText);
+              commentView.setText(comment);
+            } catch (IOException e) {
+              e.printStackTrace();
+            }
 
             int pathLength = path.length();
             DateFormat formatter = new SimpleDateFormat("yyyyMMdd");
@@ -190,6 +212,31 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
             }
         }
 
+
+
+
+    public void submitComment(View v) {
+        if (currentPhotoPath != null) {
+            TextView commentView = findViewById(R.id.main_CaptionEditText);
+            String comment;
+            comment = commentView.getText().toString();
+            System.out.println(comment);
+            ExifInterface exif = null;
+            try {
+                System.out.println(currentPhotoPath);
+                exif = new ExifInterface(currentPhotoPath);
+                exif.setAttribute(ExifInterface.TAG_USER_COMMENT, comment);
+                System.out.println(exif.getAttribute(ExifInterface.TAG_USER_COMMENT));
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            try {
+                exif.saveAttributes();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            displayPhoto(currentPhotoPath);
+        }
 
     }
 
