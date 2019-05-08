@@ -186,15 +186,15 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
 
             ImageView iv = findViewById(R.id.main_imageView);
             iv.setImageBitmap(BitmapFactory.decodeFile(path));
-          
+
             try {
-              ExifInterface exifInterface = new ExifInterface(path);
-              String comment;
-              comment = exifInterface.getAttribute(ExifInterface.TAG_USER_COMMENT);
-              TextView commentView = findViewById(R.id.main_CaptionEditText);
-              commentView.setText(comment);
+                ExifInterface exifInterface = new ExifInterface(path);
+                String comment;
+                comment = exifInterface.getAttribute(ExifInterface.TAG_USER_COMMENT);
+                TextView commentView = findViewById(R.id.main_CaptionEditText);
+                commentView.setText(comment);
             } catch (IOException e) {
-              e.printStackTrace();
+                e.printStackTrace();
             }
 
             int pathLength = path.length();
@@ -211,6 +211,7 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
                 e.printStackTrace();
             }
         }
+    }
 
 
 
