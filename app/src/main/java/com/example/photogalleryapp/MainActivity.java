@@ -139,7 +139,7 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
     public File createImageFile() throws IOException {
         String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
         String imageFileName = "JPEG_" + timeStamp + "_";
-        File dir = getExternalFilesDir(Environment.DIRECTORY_PICTURES);
+        File dir = MyApplication.getAppContext().getFilesDir();
         File image = File.createTempFile(imageFileName, ".jpg", dir );
         currentPhotoPath = image.getAbsolutePath();
         Log.d("createImageFile", currentPhotoPath);
@@ -151,14 +151,10 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
         ImageView imageView = findViewById(R.id.main_imageView);
 
         if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
-
-            String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
-            String imageFileName = "JPEG_" + timeStamp + "_";
-            File dir = MyApplication.getAppContext().getFilesDir();
-
+            
             File image = null;
             try {
-                image = File.createTempFile(imageFileName, ".jpg", dir );
+                image = createImageFile();
             } catch (IOException e) {
                 Log.d("Failed Creating Photo", "Unable to create a temporary photo.");
                 Log.d("Stack Trace", e.getStackTrace().toString());
