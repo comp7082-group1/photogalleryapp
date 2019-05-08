@@ -119,6 +119,7 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
         TextView dateView = findViewById(R.id.main_TimeStamp);
         Button btnLeft = findViewById(R.id.main_LeftButton);
         Button btnRight = findViewById(R.id.main_RightButton);
+        Button comment = findViewById(R.id.main_CommentButton);
         EditText caption = findViewById(R.id.main_CaptionEditText);
 
         if(!photoGallery.isEmpty()) {
@@ -128,6 +129,7 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
             noResult.setVisibility(View.INVISIBLE);
             btnLeft.setVisibility(View.VISIBLE);
             btnRight.setVisibility(View.VISIBLE);
+            comment.setVisibility(View.VISIBLE);
             caption.setVisibility(View.VISIBLE);
 
             System.out.println("displaying first image " + photoGallery.get(0));
@@ -141,6 +143,7 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
             noResult.setVisibility(View.VISIBLE);
             btnLeft.setVisibility(View.INVISIBLE);
             btnRight.setVisibility(View.INVISIBLE);
+            comment.setVisibility(View.INVISIBLE);
             caption.setVisibility(View.INVISIBLE);
         }
     }
