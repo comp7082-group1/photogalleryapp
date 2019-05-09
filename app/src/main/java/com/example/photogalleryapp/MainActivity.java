@@ -56,6 +56,9 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        TextView dateView = findViewById(R.id.main_TimeStamp);
+        dateView.setText("test");
+        
         Button btnLeft = findViewById(R.id.main_LeftButton);
         Button btnRight = findViewById(R.id.main_RightButton);
         Button btnSearch = findViewById(R.id.main_searchButton);
@@ -80,9 +83,17 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
         locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             // no location permissions
+            ActivityCompat.requestPermissions(this,
+                    new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
+                    5);
+            ActivityCompat.requestPermissions(this,
+                    new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
+                    6);
         } else {
             locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, this);
         }
+
+
     }
 
     private View.OnClickListener filterListener = new View.OnClickListener() {
@@ -234,12 +245,11 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
                 TextView commentView = findViewById(R.id.main_CaptionEditText);
                 commentView.setText(comment);
 
-                if(currentLocation != null) {
-                    String lat = exifInterface.getAttribute(ExifInterface.TAG_GPS_LATITUDE);
-                    String lon = exifInterface.getAttribute(ExifInterface.TAG_GPS_LONGITUDE);
-                    TextView locationView = findViewById(R.id.main_locationText);
-                    locationView.setText("Lat: " + lat + " Long: " + lon);
-                }
+                String lat = exifInterface.getAttribute(ExifInterface.TAG_GPS_LATITUDE);
+                String lon = exifInterface.getAttribute(ExifInterface.TAG_GPS_LONGITUDE);
+                TextView locationView = findViewById(R.id.main_locationText);
+                locationView.setText("Lat: " + lat + " Long: " + lon);
+
                 String timestamp = exifInterface.getAttribute(ExifInterface.TAG_DATETIME);
                 TextView timeStampView = findViewById(R.id.main_TimeStamp);
                 timeStampView.setText(timestamp);
@@ -269,41 +279,41 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
         }
     }
 
-        String dec2DMS(double coord) {
-            coord = coord > 0 ? coord : -coord;  // -105.9876543 -> 105.9876543
-            String sOut = Integer.toString((int) coord) + "/1,";   // 105/1,
-            coord = (coord % 1) * 60;         // .987654321 * 60 = 59.259258
-            sOut = sOut + Integer.toString((int) coord) + "/1,";   // 105/1,59/1,
-            coord = (coord % 1) * 60000;             // .259258 * 60000 = 15555
-            sOut = sOut + Integer.toString((int) coord) + "/1000";   // 105/1,59/1,15555/1000
-            return sOut;
+    String dec2DMS(double coord) {
+        coord = coord > 0 ? coord : -coord;  // -105.9876543 -> 105.9876543
+        String sOut = Integer.toString((int) coord) + "/1,";   // 105/1,
+        coord = (coord % 1) * 60;         // .987654321 * 60 = 59.259258
+        sOut = sOut + Integer.toString((int) coord) + "/1,";   // 105/1,59/1,
+        coord = (coord % 1) * 60000;             // .259258 * 60000 = 15555
+        sOut = sOut + Integer.toString((int) coord) + "/1000";   // 105/1,59/1,15555/1000
+        return sOut;
+    }
+
+    private String getLocationText() {
+        return "Lat:" + currentLocation.getLatitude() + ",\r\n Long:" + currentLocation.getLongitude();
+    }
+
+    public void submitLocation() {
+        if (currentPhotoPath != null && currentLocation != null) {
+            saveAttribute(currentPhotoPath, ExifInterface.TAG_GPS_LATITUDE, dec2DMS(currentLocation.getLatitude()));
+            saveAttribute(currentPhotoPath, ExifInterface.TAG_GPS_LONGITUDE, dec2DMS(currentLocation.getLongitude()));
         }
+    }
 
-    private String getLocationText(){
-                return "Lat:"  + currentLocation.getLatitude() + ",\r\n Long:"  + currentLocation.getLongitude();
-            }
+    public void submitTimeStamp() {
+        if (currentPhotoPath != null) {
+            SimpleDateFormat dateTimeFormat = new SimpleDateFormat("yyyy:MM:dd HH:mm:ss");
+            saveAttribute(currentPhotoPath, ExifInterface.TAG_DATETIME, dateTimeFormat.format(new Date()));
+        }
+    }
 
-            public void submitLocation() {
-                if (currentPhotoPath != null && currentLocation != null) {
-                        saveAttribute(currentPhotoPath, ExifInterface.TAG_GPS_LATITUDE, dec2DMS(currentLocation.getLatitude()));
-                        saveAttribute(currentPhotoPath, ExifInterface.TAG_GPS_LONGITUDE, dec2DMS(currentLocation.getLongitude()));
-                    }
-            }
-
-            public void submitTimeStamp() {
-                if (currentPhotoPath != null) {
-                        String timeStamp = ((TextView)findViewById(R.id.main_TimeStamp)).getText().toString();
-                        saveAttribute(currentPhotoPath, ExifInterface.TAG_DATETIME, timeStamp);
-                }
-            }
-
-            public void submitComment() {
-                if (currentPhotoPath != null) {
-                        TextView commentView = findViewById(R.id.main_CaptionEditText);
-                        String comment;
-                        comment = commentView.getText().toString();
-                        System.out.println(comment);
-                        saveAttribute(currentPhotoPath, ExifInterface.TAG_USER_COMMENT, comment);
+    public void submitComment() {
+        if (currentPhotoPath != null) {
+            TextView commentView = findViewById(R.id.main_CaptionEditText);
+            String comment;
+            comment = commentView.getText().toString();
+            System.out.println(comment);
+            saveAttribute(currentPhotoPath, ExifInterface.TAG_USER_COMMENT, comment);
         }
     }
 
@@ -375,6 +385,8 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
                     image = createImageFile(imageBitmap);
                     currentPhotoPath = image.getAbsolutePath();
                     Toast.makeText(this, image.getAbsolutePath(), Toast.LENGTH_LONG).show();
+                    TextView textView = findViewById(R.id.main_TimeStamp);
+                    textView.setText(new Date(System.currentTimeMillis()).toString());
                 } catch (IOException e) {
                     Log.d("Failed Creating Photo", "Unable to create a temporary photo.");
                     Log.d("Stack Trace", e.getStackTrace().toString());
