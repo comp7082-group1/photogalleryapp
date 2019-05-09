@@ -96,10 +96,10 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
 
                 DateFormat format = new SimpleDateFormat("yyyyMMdd");
                 Date fileDate = null;
-                String fileDateStr = f.getAbsolutePath().substring(filePathLength-32, filePathLength-24);
+                String fileDateStr = f.getAbsolutePath().substring(filePathLength - 32, filePathLength - 24);
                 System.out.println(f.getAbsolutePath());
                 System.out.println(f.getAbsolutePath().substring(filePathLength - 33));
-                System.out.println(f.getAbsolutePath().substring(filePathLength-32, filePathLength-24));
+                System.out.println(f.getAbsolutePath().substring(filePathLength - 32, filePathLength - 24));
                 try {
                     fileDate = format.parse(fileDateStr);
                 } catch (ParseException e) {
@@ -116,9 +116,12 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
                 comment = exifInterface.getAttribute(ExifInterface.TAG_USER_COMMENT);
 
 
+                if (fileDate == null) {
+                    fileDate = new Date(System.currentTimeMillis());
+                }
                 // TODO: 5/8/2019 Compare fileDate with minDate and maxDate to see if it is within bounds 
-                if(extension.equals(".jpg")) {
-                    if (fileDate.compareTo(minDate) >= 0 && fileDate.compareTo(maxDate) <= 0 ) {
+                if (extension.equals(".jpg")) {
+                    if (fileDate.compareTo(minDate) >= 0 && fileDate.compareTo(maxDate) <= 0) {
                         System.out.println("adding " + f.getPath() + " to gallery");
                         photoGallery.add(f.getPath());
                     }
@@ -140,7 +143,7 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
         Button comment = findViewById(R.id.main_CommentButton);
         EditText caption = findViewById(R.id.main_CaptionEditText);
 
-        if(!photoGallery.isEmpty()) {
+        if (!photoGallery.isEmpty()) {
 
             iv.setVisibility(View.VISIBLE);
             dateView.setVisibility(View.VISIBLE);
@@ -235,8 +238,6 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
     }
 
 
-
-
     public void submitComment(View v) {
         if (currentPhotoPath != null) {
             TextView commentView = findViewById(R.id.main_CaptionEditText);
@@ -266,25 +267,27 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
         Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
 
         // Ensure that there's a camera activity to handle the intent
-        if(takePictureIntent.resolveActivity(getPackageManager()) != null) {
+        if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
             startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE);
         }
     }
 
-    public File createImageFile() throws IOException {
-        String timeStamp = new SimpleDateFormat("yyyyMMdd").format(new Date());
+    public File createImageFile(Bitmap imageBitmap) throws IOException {
+        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
         String imageFileName = "JPEG_" + timeStamp + "_";
         File dir = MyApplication.getAppContext().getFilesDir();
-        File image = File.createTempFile(imageFileName, ".jpg", dir );
-        currentPhotoPath = image.getAbsolutePath();
-        Log.d("createImageFile", currentPhotoPath);
+        File image = File.createTempFile(imageFileName, ".jpg", dir);
+        Log.d("createImageFile", image.getAbsolutePath());
+        try (FileOutputStream out = new FileOutputStream(image)) {
+            imageBitmap.compress(Bitmap.CompressFormat.JPEG, 100, out); // bmp is your Bitmap instance
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         return image;
     }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        ImageView imageView = findViewById(R.id.main_imageView);
-
         if (requestCode == SEARCH_ACTIVITY_REQUEST_CODE) {
             if (resultCode == RESULT_OK) {
                 Log.d("createImageFile", data.getStringExtra("STARTDATE"));
@@ -296,7 +299,7 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
                 Date minDate = null;
                 Date maxDate = null;
                 String keyword = data.getStringExtra("KEYWORD");
-                
+
                 try {
                     minDate = format.parse(data.getStringExtra("STARTDATE"));
                     maxDate = format.parse(data.getStringExtra("ENDDATE"));
@@ -317,39 +320,40 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
         }
 
         if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
-
+            ImageView imageView = findViewById(R.id.main_imageView);
             File image = null;
-            try {
-                image = createImageFile();
-            } catch (IOException e) {
-                Log.d("Failed Creating Photo", "Unable to create a temporary photo.");
-                Log.d("Stack Trace", e.getStackTrace().toString());
-            }
+            if (data != null && data.getExtras() != null) {
+                Bitmap imageBitmap = (Bitmap) data.getExtras().get("data");
+                // display image
+                //                imageView.setImageBitmap(imageBitmap);
+                try {
+                    // save image to disk
+                    image = createImageFile(imageBitmap);
+                    currentPhotoPath = image.getAbsolutePath();
+                    Toast.makeText(this, image.getAbsolutePath(), Toast.LENGTH_LONG).show();
+                } catch (IOException e) {
+                    Log.d("Failed Creating Photo", "Unable to create a temporary photo.");
+                    Log.d("Stack Trace", e.getStackTrace().toString());
+                }
 
-            Bitmap imageBitmap = (Bitmap) data.getExtras().get("data");
-            try (FileOutputStream out = new FileOutputStream(image)) {
-                Log.d("Writing to bit map", "Creating image.");
-                imageBitmap.compress(Bitmap.CompressFormat.JPEG, 100, out); // bmp is your Bitmap instance
-            } catch (IOException e) {
-                e.printStackTrace();
+                Date minDate = new Date(Long.MIN_VALUE);
+                Date maxDate = new Date(Long.MAX_VALUE);
+                loadGallery(minDate, maxDate, "");
+                displayPhoto(currentPhotoPath);
+                currentPhotoIndex = findPhotoIndex(currentPhotoPath);
             }
-            Log.d("Created Image", "Successfully created an image.");
-            Log.d("Image Path", image.getAbsolutePath());
 
             Toast.makeText(this, image.getAbsolutePath(), Toast.LENGTH_LONG).show();
-
-//            // display image
-//            if (data != null && data.getExtras() != null) {
-//                Bitmap imageBitmap = (Bitmap) data.getExtras().get("data");
-//                imageView.setImageBitmap(imageBitmap);
-//            }
-//            // display time
-//            TextView txtTimeStamp = findViewById(R.id.main_TimeStamp);
-//            txtTimeStamp.setText(new Date().toString());
-//            // display location
-//            TextView txtLocation = findViewById(R.id.main_LocationText);
-//            txtLocation.setText(locationText);
         }
+    }
+
+    private int findPhotoIndex(String path) {
+        for (int i = 0; i < photoGallery.size(); ++i) {
+            if (photoGallery.get(i).equals(path)) {
+                return i;
+            }
+        }
+        return 0;
     }
 
     @Override
