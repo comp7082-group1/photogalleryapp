@@ -49,6 +49,7 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
     protected Integer currentPhotoIndex = 0;
     protected String currentPhotoPath = null;
     protected Boolean resultFlag = Boolean.TRUE;
+    Location currentLocation = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -71,6 +72,17 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
         Date minDate = new Date(Long.MIN_VALUE);
         Date maxDate = new Date(Long.MAX_VALUE);
         loadGallery(minDate, maxDate, "");
+        if (!photoGallery.isEmpty()) {
+            currentPhotoIndex = photoGallery.size() - 1;
+            displayPhoto(photoGallery.get(currentPhotoIndex));
+        }
+
+        locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            // no location permissions
+        } else {
+            locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, this);
+        }
     }
 
     private View.OnClickListener filterListener = new View.OnClickListener() {
@@ -147,15 +159,16 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
 
             iv.setVisibility(View.VISIBLE);
             dateView.setVisibility(View.VISIBLE);
+            dateView.setVisibility(View.VISIBLE);
             noResult.setVisibility(View.INVISIBLE);
             btnLeft.setVisibility(View.VISIBLE);
             btnRight.setVisibility(View.VISIBLE);
             comment.setVisibility(View.VISIBLE);
             caption.setVisibility(View.VISIBLE);
 
-            System.out.println("displaying first image " + photoGallery.get(0));
-            currentPhotoPath = photoGallery.get(0);
-            displayPhoto(currentPhotoPath);
+//            System.out.println("displaying first image " + photoGallery.get(0));
+//            currentPhotoPath = photoGallery.get(0);
+//            displayPhoto(currentPhotoPath);
         } else {
             resultFlag = Boolean.FALSE;
 
@@ -179,7 +192,10 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
                 previousPhoto(v);
                 break;
             case R.id.main_CommentButton:
-                submitComment(v);
+//                submitComment(v);
+                submitLocation();
+                submitComment();
+                submitTimeStamp();
                 break;
         }
         Log.d("Current Index: ", "" + currentPhotoIndex);
@@ -206,7 +222,7 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
 
     public void displayPhoto(String path) {
 
-        if (currentPhotoPath != null) {
+        if (path != null) {
 
             ImageView iv = findViewById(R.id.main_imageView);
             iv.setImageBitmap(BitmapFactory.decodeFile(path));
@@ -217,39 +233,30 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
                 comment = exifInterface.getAttribute(ExifInterface.TAG_USER_COMMENT);
                 TextView commentView = findViewById(R.id.main_CaptionEditText);
                 commentView.setText(comment);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
 
-            int pathLength = path.length();
-            DateFormat formatter = new SimpleDateFormat("yyyyMMdd");
-            DateFormat formatPrint = new SimpleDateFormat("yyyy/MM/dd");
-            Date fileDate = null;
-            String fileDateStr = path.substring(pathLength - 32, pathLength - 24);
-            try {
-                fileDate = formatter.parse(fileDateStr);
-                System.out.println(formatPrint.format(fileDate));
-                TextView dateView = findViewById(R.id.main_TimeStamp);
-                dateView.setText(formatPrint.format(fileDate));
-            } catch (ParseException e) {
+                if(currentLocation != null) {
+                    String lat = exifInterface.getAttribute(ExifInterface.TAG_GPS_LATITUDE);
+                    String lon = exifInterface.getAttribute(ExifInterface.TAG_GPS_LONGITUDE);
+                    TextView locationView = findViewById(R.id.main_locationText);
+                    locationView.setText("Lat: " + lat + " Long: " + lon);
+                }
+                String timestamp = exifInterface.getAttribute(ExifInterface.TAG_DATETIME);
+                TextView timeStampView = findViewById(R.id.main_TimeStamp);
+                timeStampView.setText(timestamp);
+
+            } catch (IOException e) {
                 e.printStackTrace();
             }
         }
     }
 
-
-    public void submitComment(View v) {
-        if (currentPhotoPath != null) {
-            TextView commentView = findViewById(R.id.main_CaptionEditText);
-            String comment;
-            comment = commentView.getText().toString();
-            System.out.println(comment);
+    public void saveAttribute(String path, String tag, String value) {
+        if (path != null) {
             ExifInterface exif = null;
             try {
-                System.out.println(currentPhotoPath);
-                exif = new ExifInterface(currentPhotoPath);
-                exif.setAttribute(ExifInterface.TAG_USER_COMMENT, comment);
-                System.out.println(exif.getAttribute(ExifInterface.TAG_USER_COMMENT));
+
+                exif = new ExifInterface(path);
+                exif.setAttribute(tag, value);
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -258,9 +265,46 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
             } catch (IOException e) {
                 e.printStackTrace();
             }
-            displayPhoto(currentPhotoPath);
+
+        }
+    }
+
+        String dec2DMS(double coord) {
+            coord = coord > 0 ? coord : -coord;  // -105.9876543 -> 105.9876543
+            String sOut = Integer.toString((int) coord) + "/1,";   // 105/1,
+            coord = (coord % 1) * 60;         // .987654321 * 60 = 59.259258
+            sOut = sOut + Integer.toString((int) coord) + "/1,";   // 105/1,59/1,
+            coord = (coord % 1) * 60000;             // .259258 * 60000 = 15555
+            sOut = sOut + Integer.toString((int) coord) + "/1000";   // 105/1,59/1,15555/1000
+            return sOut;
         }
 
+    private String getLocationText(){
+                return "Lat:"  + currentLocation.getLatitude() + ",\r\n Long:"  + currentLocation.getLongitude();
+            }
+
+            public void submitLocation() {
+                if (currentPhotoPath != null && currentLocation != null) {
+                        saveAttribute(currentPhotoPath, ExifInterface.TAG_GPS_LATITUDE, dec2DMS(currentLocation.getLatitude()));
+                        saveAttribute(currentPhotoPath, ExifInterface.TAG_GPS_LONGITUDE, dec2DMS(currentLocation.getLongitude()));
+                    }
+            }
+
+            public void submitTimeStamp() {
+                if (currentPhotoPath != null) {
+                        String timeStamp = ((TextView)findViewById(R.id.main_TimeStamp)).getText().toString();
+                        saveAttribute(currentPhotoPath, ExifInterface.TAG_DATETIME, timeStamp);
+                }
+            }
+
+            public void submitComment() {
+                if (currentPhotoPath != null) {
+                        TextView commentView = findViewById(R.id.main_CaptionEditText);
+                        String comment;
+                        comment = commentView.getText().toString();
+                        System.out.println(comment);
+                        saveAttribute(currentPhotoPath, ExifInterface.TAG_USER_COMMENT, comment);
+        }
     }
 
     public void snapPhoto(View view) {
@@ -358,7 +402,8 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
 
     @Override
     public void onLocationChanged(Location location) {
-        locationText = "Latitude:" + location.getLatitude() + ",\r\n Longitude:" + location.getLongitude();
+        currentLocation = location;
+        locationText = getLocationText();
     }
 
     @Override

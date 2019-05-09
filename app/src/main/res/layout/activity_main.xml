@@ -125,4 +125,12 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/main_CaptionEditText" />
 
+    <TextView
+        android:id="@+id/main_locationText"
+        android:layout_width="134dp"
+        android:layout_height="20dp"
+        android:text="TextView"
+        tools:layout_editor_absoluteX="32dp"
+        tools:layout_editor_absoluteY="363dp" />
+
 </android.support.constraint.ConstraintLayout>
