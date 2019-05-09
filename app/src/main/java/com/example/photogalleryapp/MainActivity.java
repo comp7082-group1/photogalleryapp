@@ -70,7 +70,7 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
         DateFormat format = new SimpleDateFormat("yyyyMMdd");
         Date minDate = new Date(Long.MIN_VALUE);
         Date maxDate = new Date(Long.MAX_VALUE);
-        loadGallery(minDate, maxDate);
+        loadGallery(minDate, maxDate, "");
     }
 
     private View.OnClickListener filterListener = new View.OnClickListener() {
@@ -80,7 +80,7 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
         }
     };
 
-    public void loadGallery(Date minDate, Date maxDate) {
+    public void loadGallery(Date minDate, Date maxDate, String keyword) {
         File dir = MyApplication.getAppContext().getFilesDir();
 
         Log.d("Loading Gallery", "Loading from: " + dir.getPath());
@@ -105,11 +105,29 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
                 } catch (ParseException e) {
                     e.printStackTrace();
                 }
+
+                ExifInterface exifInterface = null;
+                try {
+                    exifInterface = new ExifInterface(f.getAbsolutePath());
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                String comment;
+                comment = exifInterface.getAttribute(ExifInterface.TAG_USER_COMMENT);
+
+
                 // TODO: 5/8/2019 Compare fileDate with minDate and maxDate to see if it is within bounds 
                 if(extension.equals(".jpg")) {
                     if (fileDate.compareTo(minDate) >= 0 && fileDate.compareTo(maxDate) <= 0 ) {
                         System.out.println("adding " + f.getPath() + " to gallery");
                         photoGallery.add(f.getPath());
+                    }
+                    if (keyword != null && comment != null) {
+                        String commentLower = comment.toLowerCase();
+                        String keywordLower = keyword.toLowerCase();
+                        if (commentLower.contains(keywordLower)) {
+                            photoGallery.add(f.getPath());
+                        }
                     }
                 }
             }
@@ -271,22 +289,25 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
             if (resultCode == RESULT_OK) {
                 Log.d("createImageFile", data.getStringExtra("STARTDATE"));
                 Log.d("createImageFile", data.getStringExtra("ENDDATE"));
+                Log.d("createImageFile", data.getStringExtra("KEYWORD"));
 
                 // TODO: 5/8/2019 Check minDate and maxDate is being populated correctly!!!! Completed = Confirmed
                 DateFormat format = new SimpleDateFormat("yyyyMMdd");
                 Date minDate = null;
                 Date maxDate = null;
+                String keyword = data.getStringExtra("KEYWORD");
                 
                 try {
                     minDate = format.parse(data.getStringExtra("STARTDATE"));
                     maxDate = format.parse(data.getStringExtra("ENDDATE"));
+
                 } catch (ParseException e) {
                     e.printStackTrace();
                 }
-                System.out.println(format.format(minDate));
-                System.out.println(format.format(maxDate));
+                //System.out.println(format.format(minDate));
+                //System.out.println(format.format(maxDate));
 
-                loadGallery(minDate, maxDate);
+                loadGallery(minDate, maxDate, keyword);
                 currentPhotoIndex = 0;
                 if (resultFlag) {
                     currentPhotoPath = photoGallery.get(currentPhotoIndex);

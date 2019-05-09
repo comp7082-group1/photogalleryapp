@@ -25,6 +25,7 @@ public class SearchActivity extends AppCompatActivity implements DatePickerDialo
     private DatePickerDialog.OnDateSetListener fromListener;
     private DatePickerDialog.OnDateSetListener toListener;
     private boolean isStartDate = false;
+    private TextView keyword;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,6 +34,7 @@ public class SearchActivity extends AppCompatActivity implements DatePickerDialo
 
         fromDate = findViewById(R.id.search_fromDate);
         toDate = findViewById(R.id.search_toDate);
+        keyword = findViewById(R.id.search_keywordText);
 
 
         fromDate.setOnClickListener(new View.OnClickListener() {
@@ -82,6 +84,7 @@ public class SearchActivity extends AppCompatActivity implements DatePickerDialo
         Intent i = new Intent();
         i.putExtra("STARTDATE", new SimpleDateFormat("yyyyMMdd").format(fromCalendar.getTime()));
         i.putExtra("ENDDATE", new SimpleDateFormat("yyyyMMdd").format(toCalendar.getTime()));
+        i.putExtra("KEYWORD", keyword.getText().toString());
         setResult(RESULT_OK, i);
         finish();
     }
