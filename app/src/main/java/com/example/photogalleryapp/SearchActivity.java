@@ -82,8 +82,16 @@ public class SearchActivity extends AppCompatActivity implements DatePickerDialo
 
     public void search(View v) {
         Intent i = new Intent();
-        i.putExtra("STARTDATE", new SimpleDateFormat("yyyyMMdd").format(fromCalendar.getTime()));
-        i.putExtra("ENDDATE", new SimpleDateFormat("yyyyMMdd").format(toCalendar.getTime()));
+        if (!fromDate.getText().toString().equals("") && !toDate.getText().toString().equals("")) {
+            i.putExtra("STARTDATE", new SimpleDateFormat("yyyyMMdd").format(fromCalendar.getTime()));
+            i.putExtra("ENDDATE", new SimpleDateFormat("yyyyMMdd").format(toCalendar.getTime()));
+        } else {
+            Date minDate = new Date(Long.MIN_VALUE);
+            Date maxDate = new Date(Long.MAX_VALUE);
+            i.putExtra("STARTDATE", new SimpleDateFormat("yyyyMMdd").format(minDate));
+            i.putExtra("ENDDATE", new SimpleDateFormat("yyyyMMdd").format(maxDate));
+        }
+
         i.putExtra("KEYWORD", keyword.getText().toString());
         setResult(RESULT_OK, i);
         finish();
