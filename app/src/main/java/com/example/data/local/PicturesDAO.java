@@ -61,6 +61,6 @@ public interface PicturesDAO {
      * @return the number of picture deleted. This should always be 1.
      */
     @Query("DELETE FROM Pictures WHERE pictureid = :pictureId")
-    int deleteTaskById(String pictureId);
+    int deletePictureById(String pictureId);
 
 }

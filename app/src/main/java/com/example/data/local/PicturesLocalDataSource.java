@@ -3,9 +3,12 @@ package com.example.data.local;
 import androidx.annotation.NonNull;
 
 import com.example.data.Picture;
+import com.example.data.PicturesDataSource;
 import com.example.util.AppExecutors;
 
 import java.util.List;
+
+import static com.google.common.base.Preconditions.checkNotNull;
 
 
 public class PicturesLocalDataSource implements PicturesDataSource {
@@ -79,8 +82,15 @@ public class PicturesLocalDataSource implements PicturesDataSource {
     }
 
     @Override
-    public void savePicture(@NonNull Picture task) {
-
+    public void savePicture(@NonNull final Picture picture) {
+        checkNotNull(picture);
+        Runnable saveRunnable = new Runnable() {
+            @Override
+            public void run() {
+                mPictureDAO.insertPicture(picture);
+            }
+        };
+        mAppExecutors.diskIO().execute(saveRunnable);
     }
 
     @Override
@@ -89,7 +99,14 @@ public class PicturesLocalDataSource implements PicturesDataSource {
     }
 
     @Override
-    public void deletePicture(@NonNull String pictureId) {
+    public void deletePicture(@NonNull final String pictureId) {
+        Runnable deleteRunnable = new Runnable() {
+            @Override
+            public void run() {
+                mPictureDAO.deletePictureById(pictureId);
+            }
+        };
 
+        mAppExecutors.diskIO().execute(deleteRunnable);
     }
 }

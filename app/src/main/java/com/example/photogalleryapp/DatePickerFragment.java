@@ -1,15 +1,12 @@
 package com.example.photogalleryapp;
 
-import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.v4.app.DialogFragment;
-import android.widget.DatePicker;
 
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
+import androidx.annotation.NonNull;
+import androidx.fragment.app.DialogFragment;
+
 import java.util.Calendar;
 
 

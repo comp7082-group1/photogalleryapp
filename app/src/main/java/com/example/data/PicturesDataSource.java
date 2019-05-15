@@ -1,8 +1,6 @@
-package com.example.data.local;
+package com.example.data;
 
 import androidx.annotation.NonNull;
-
-import com.example.data.Picture;
 
 import java.util.List;
 
