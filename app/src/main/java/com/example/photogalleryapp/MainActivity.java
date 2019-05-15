@@ -1,6 +1,7 @@
 package com.example.photogalleryapp;
 
 import android.Manifest;
+import android.arch.persistence.room.Room;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -21,6 +22,8 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.example.photogalleryapp.data.PhotoGalleryDatabase;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -86,7 +89,7 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
             locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, this);
         }
 
-
+        PhotoGalleryDatabase db = PhotoGalleryDatabase.getInstance(MyApplication.getAppContext());
     }
 
     private View.OnClickListener filterListener = new View.OnClickListener() {
