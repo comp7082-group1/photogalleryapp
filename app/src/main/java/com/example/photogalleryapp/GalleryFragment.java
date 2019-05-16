@@ -4,13 +4,18 @@ import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -18,7 +23,10 @@ import androidx.annotation.Nullable;
 import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.Fragment;
 
+import static androidx.core.app.ActivityCompat.startActivityForResult;
+import static com.example.photogalleryapp.GalleryPresenter.SEARCH_ACTIVITY_REQUEST_CODE;
 import static com.google.common.base.Preconditions.checkNotNull;
+import static com.example.photogalleryapp.GalleryPresenter.REQUEST_IMAGE_CAPTURE;
 
 public class GalleryFragment extends Fragment implements GalleryContract.View, LocationListener, View.OnClickListener {
 
@@ -69,6 +77,52 @@ public class GalleryFragment extends Fragment implements GalleryContract.View, L
 //        mPresenter.onActivityResult();
 //    }
 
+    // refresh view visibility based on if photoGalleryApp list is empty
+    public void refreshVisibility(){
+
+        View view = getView();
+        mPresenter.refreshVisibility(view);
+
+    }
+
+    @Override
+    public void setImageBitmap(Bitmap decodeFile) {
+        ImageView iv = getView().findViewById(R.id.main_imageView);
+        iv.setImageBitmap(decodeFile);
+    }
+
+    @Override
+    public void setComment(String comment) {
+        TextView commentView = getView().findViewById(R.id.main_CaptionEditText);
+        commentView.setText(comment);
+    }
+
+    @Override
+    public void setCoordinates(String s) {
+        TextView locationView = getView().findViewById(R.id.main_locationText);
+        locationView.setText(s);
+    }
+
+    @Override
+    public void setTimestamp(String timestamp) {
+        TextView timeStampView = getView().findViewById(R.id.main_TimeStamp);
+        timeStampView.setText(timestamp);
+    }
+
+    @Override
+    public String getComment() {
+        TextView commentView = getView().findViewById(R.id.main_CaptionEditText);
+        String comment;
+        return commentView.getText().toString();
+    }
+
+
+    @Override
+    public void startActivity() {
+        Intent i = new Intent(getActivity(), SearchActivity.class);
+        startActivityForResult(i, SEARCH_ACTIVITY_REQUEST_CODE);
+    }
+
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
@@ -115,6 +169,14 @@ public class GalleryFragment extends Fragment implements GalleryContract.View, L
     }
 
 
+    public void snapPhoto(View view) {
+        Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+
+        // Ensure that there's a camera activity to handle the intent
+        if (takePictureIntent.resolveActivity(getActivity().getPackageManager()) != null) {
+            startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE);
+        }
+    }
 
     public void onClick(View v) {
         switch (v.getId()) {

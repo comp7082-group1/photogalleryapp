@@ -57,14 +57,6 @@ public class GalleryPresenter implements GalleryContract.Presenter {
     }
 
 
-    public void snapPhoto(View view) {
-        Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-
-        // Ensure that there's a camera activity to handle the intent
-        if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
-            startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE);
-        }
-    }
 
     // initialize a list of file paths named photoGallery
     public void loadGallery(Date minDate, Date maxDate, String keyword) {
@@ -121,7 +113,7 @@ public class GalleryPresenter implements GalleryContract.Presenter {
         Date minDate = new Date(Long.MIN_VALUE);
         Date maxDate = new Date(Long.MAX_VALUE);
         loadGallery(minDate, maxDate, "");
-        refreshVisibility();
+        mPhotoView.refreshVisibility();
         if (!photoGallery.isEmpty()) {
             currentPhotoIndex = photoGallery.size() - 1;
             displayPhoto(photoGallery.get(currentPhotoIndex));
@@ -130,45 +122,11 @@ public class GalleryPresenter implements GalleryContract.Presenter {
 
     @Override
     public void onClick(View v) {
-        Intent i = new Intent(this, SearchActivity.class);
-        startActivityForResult(i, SEARCH_ACTIVITY_REQUEST_CODE);
+        mPhotoView.startActivity();
     }
 
 
-    // refresh view visibility based on if photoGalleryApp list is empty
-    private void refreshVisibility(View root){
-        ImageView iv = root.findViewById(R.id.main_imageView);
-        TextView noResult = root.findViewById(R.id.main_noResults);
-        TextView dateView = root.findViewById(R.id.main_TimeStamp);
-        Button btnLeft = root.findViewById(R.id.main_LeftButton);
-        Button btnRight = root.findViewById(R.id.main_RightButton);
-        Button comment = root.findViewById(R.id.main_CommentButton);
-        EditText caption = root.findViewById(R.id.main_CaptionEditText);
 
-        if (photoGallery.isEmpty()) {
-            // what is resultFlag?
-            resultFlag = Boolean.FALSE;
-            iv.setVisibility(View.INVISIBLE);
-            dateView.setVisibility(View.INVISIBLE);
-            noResult.setVisibility(View.VISIBLE);
-            btnLeft.setVisibility(View.INVISIBLE);
-            btnRight.setVisibility(View.INVISIBLE);
-            comment.setVisibility(View.INVISIBLE);
-            caption.setVisibility(View.INVISIBLE);
-        } else {
-            iv.setVisibility(View.VISIBLE);
-            dateView.setVisibility(View.VISIBLE);
-            dateView.setVisibility(View.VISIBLE);
-            noResult.setVisibility(View.INVISIBLE);
-            btnLeft.setVisibility(View.VISIBLE);
-            btnRight.setVisibility(View.VISIBLE);
-            comment.setVisibility(View.VISIBLE);
-            caption.setVisibility(View.VISIBLE);
-//            System.out.println("displaying first image " + photoGallery.get(0));
-//            currentPhotoPath = photoGallery.get(0);
-//            displayPhoto(currentPhotoPath);
-        }
-    }
 
     public void nextPhoto(View v) {
         if (currentPhotoIndex < photoGallery.size() - 1) {
@@ -187,27 +145,24 @@ public class GalleryPresenter implements GalleryContract.Presenter {
     }
 
     public void displayPhoto(String path) {
+
         if (path != null) {
             // display photo
-            ImageView iv = mPhotoView.findViewById(R.id.main_imageView);
-            iv.setImageBitmap(BitmapFactory.decodeFile(path));
+            mPhotoView.setImageBitmap(BitmapFactory.decodeFile(path));
 
             ExifInterface exifInterface = newExifInterface(path);
             // display comment
             String comment = exifInterface.getAttribute(ExifInterface.TAG_USER_COMMENT);
-            TextView commentView = findViewById(R.id.main_CaptionEditText);
-            commentView.setText(comment);
+            mPhotoView.setComment(comment);
 
             // display lat/long
             String lat = exifInterface.getAttribute(ExifInterface.TAG_GPS_LATITUDE);
             String lon = exifInterface.getAttribute(ExifInterface.TAG_GPS_LONGITUDE);
-            TextView locationView = findViewById(R.id.main_locationText);
-            locationView.setText("Lat: " + lat + " Long: " + lon);
+            mPhotoView.setCoordinates("Lat: " + lat + " Long: " + lon);
 
             // display timestamp
             String timestamp = exifInterface.getAttribute(ExifInterface.TAG_DATETIME);
-            TextView timeStampView = findViewById(R.id.main_TimeStamp);
-            timeStampView.setText(timestamp);
+            mPhotoView.setTimestamp(timestamp);
         }
     }
 
@@ -260,7 +215,7 @@ public class GalleryPresenter implements GalleryContract.Presenter {
                 //System.out.println(format.format(maxDate));
 
                 loadGallery(minDate, maxDate, keyword);
-                refreshVisibility();
+                mPhotoView.refreshVisibility();
                 currentPhotoIndex = 0;
                 if (resultFlag) {
                     currentPhotoPath = photoGallery.get(currentPhotoIndex);
@@ -291,12 +246,48 @@ public class GalleryPresenter implements GalleryContract.Presenter {
                 Date minDate = new Date(Long.MIN_VALUE);
                 Date maxDate = new Date(Long.MAX_VALUE);
                 loadGallery(minDate, maxDate, "");
-                refreshVisibility();
+                mPhotoView.refreshVisibility();
                 displayPhoto(currentPhotoPath);
                 currentPhotoIndex = findPhotoIndex(currentPhotoPath);
             }
 
             Toast.makeText(activity, image.getAbsolutePath(), Toast.LENGTH_LONG).show();
+        }
+    }
+
+    @Override
+    public void refreshVisibility(View view) {
+
+        ImageView iv = view.findViewById(R.id.main_imageView);
+        TextView noResult = view.findViewById(R.id.main_noResults);
+        TextView dateView = view.findViewById(R.id.main_TimeStamp);
+        Button btnLeft = view.findViewById(R.id.main_LeftButton);
+        Button btnRight = view.findViewById(R.id.main_RightButton);
+        Button comment = view.findViewById(R.id.main_CommentButton);
+        EditText caption = view.findViewById(R.id.main_CaptionEditText);
+
+        if (photoGallery.isEmpty()) {
+            // what is resultFlag?
+            resultFlag = Boolean.FALSE;
+            iv.setVisibility(View.INVISIBLE);
+            dateView.setVisibility(View.INVISIBLE);
+            noResult.setVisibility(View.VISIBLE);
+            btnLeft.setVisibility(View.INVISIBLE);
+            btnRight.setVisibility(View.INVISIBLE);
+            comment.setVisibility(View.INVISIBLE);
+            caption.setVisibility(View.INVISIBLE);
+        } else {
+            iv.setVisibility(View.VISIBLE);
+            dateView.setVisibility(View.VISIBLE);
+            dateView.setVisibility(View.VISIBLE);
+            noResult.setVisibility(View.INVISIBLE);
+            btnLeft.setVisibility(View.VISIBLE);
+            btnRight.setVisibility(View.VISIBLE);
+            comment.setVisibility(View.VISIBLE);
+            caption.setVisibility(View.VISIBLE);
+//            System.out.println("displaying first image " + photoGallery.get(0));
+//            currentPhotoPath = photoGallery.get(0);
+//            displayPhoto(currentPhotoPath);
         }
     }
 
@@ -331,9 +322,10 @@ public class GalleryPresenter implements GalleryContract.Presenter {
 
     public void submitComment() {
         if (currentPhotoPath != null) {
-            TextView commentView = findViewById(R.id.main_CaptionEditText);
-            String comment;
-            comment = commentView.getText().toString();
+            String comment = mPhotoView.getComment();
+
+
+
             System.out.println(comment);
             saveAttribute(currentPhotoPath, ExifInterface.TAG_USER_COMMENT, comment);
         }
