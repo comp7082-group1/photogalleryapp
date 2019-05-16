@@ -12,7 +12,9 @@ import android.location.LocationManager;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -22,6 +24,8 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.Fragment;
+
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import static androidx.core.app.ActivityCompat.startActivityForResult;
 import static com.example.photogalleryapp.GalleryPresenter.SEARCH_ACTIVITY_REQUEST_CODE;
@@ -68,6 +72,18 @@ public class GalleryFragment extends Fragment implements GalleryContract.View, L
 //        return null;
 //    }
 
+
+    @Nullable
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+        View root = inflater.inflate(R.layout.gallery_fra, container, false);
+//        mTitle = (TextView) root.findViewById(R.id.add_task_title);
+//        mDescription = (TextView) root.findViewById(R.id.add_task_description);
+//        setHasOptionsMenu(true);
+        return root;
+    }
+
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
 //        rootView = (ImageView) getView().findViewById(R.id.foo);
@@ -112,7 +128,6 @@ public class GalleryFragment extends Fragment implements GalleryContract.View, L
     @Override
     public String getComment() {
         TextView commentView = getView().findViewById(R.id.main_CaptionEditText);
-        String comment;
         return commentView.getText().toString();
     }
 
@@ -126,17 +141,6 @@ public class GalleryFragment extends Fragment implements GalleryContract.View, L
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-
-//        FloatingActionButton fab =
-//                (FloatingActionButton) getActivity().findViewById(R.id.fab_edit_task_done);
-//        fab.setImageResource(R.drawable.ic_done);
-//        fab.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                mPresenter.saveTask(mTitle.getText().toString(), mDescription.getText().toString());
-//            }
-//        });
-
 
         TextView dateView = getView().findViewById(R.id.main_TimeStamp);
         dateView.setText("test");
@@ -169,6 +173,7 @@ public class GalleryFragment extends Fragment implements GalleryContract.View, L
     }
 
 
+    @Override
     public void snapPhoto(View view) {
         Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
 
@@ -178,6 +183,7 @@ public class GalleryFragment extends Fragment implements GalleryContract.View, L
         }
     }
 
+    @Override
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.main_RightButton:

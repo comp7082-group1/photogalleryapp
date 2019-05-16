@@ -49,5 +49,7 @@ public interface GalleryContract  {
         void setTimestamp(String timestamp);
 
         String getComment();
+        
+        void snapPhoto(android.view.View view);
     }
 }
