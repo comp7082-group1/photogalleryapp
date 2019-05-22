@@ -21,7 +21,7 @@
         android:theme="@style/AppTheme"
         android:name="com.example.photogalleryapp.MyApplication">
         <activity android:name=".SearchActivity" />
-        <activity android:name=".MainActivity">
+        <activity android:name=".mainactivity.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

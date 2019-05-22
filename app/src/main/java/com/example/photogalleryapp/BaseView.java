@@ -1,0 +1,6 @@
+package com.example.photogalleryapp;
+
+public interface BaseView<T> {
+
+    void setPresenter(T presenter);
+}

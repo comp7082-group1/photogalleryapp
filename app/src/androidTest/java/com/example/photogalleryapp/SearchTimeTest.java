@@ -7,6 +7,8 @@ import android.util.TimingLogger;
 import androidx.test.espresso.intent.rule.IntentsTestRule;
 import androidx.test.runner.AndroidJUnit4;
 
+import com.example.photogalleryapp.mainactivity.MainActivity;
+
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
