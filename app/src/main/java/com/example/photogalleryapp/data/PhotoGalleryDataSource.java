@@ -2,9 +2,9 @@ package com.example.photogalleryapp.data;
 
 import android.support.annotation.NonNull;
 
-import com.example.photogalleryapp.PhotoDataSource;
 import com.example.photogalleryapp.util.AppExecutors;
 
+import java.util.Date;
 import java.util.List;
 
 public class PhotoGalleryDataSource {
@@ -28,6 +28,16 @@ public class PhotoGalleryDataSource {
         return INSTANCE;
     }
 
+    public void getPhotos(final Date minDate, final Date maxDate, final String keyword, @NonNull final PhotoDataSource.GetPhotoCallback callback){
+        mAppExecutors.diskIO().execute(new Runnable() {
+            @Override
+            public void run() {
+                List<Photo> photos = mPhotoDao.getPhotos("", "", keyword);
+                callback.onPhotosLoaded(photos);
+            }
+        });
+    }
+
     public void getPhotos(@NonNull final PhotoDataSource.GetPhotoCallback callback){
         mAppExecutors.diskIO().execute(new Runnable() {
             @Override
@@ -38,12 +48,11 @@ public class PhotoGalleryDataSource {
         });
     }
 
-    public void savePhoto(final Photo photo, @NonNull final PhotoDataSource.GetPhotoCallback callback){
+    public void savePhoto(final Photo photo){
         mAppExecutors.diskIO().execute(new Runnable() {
             @Override
             public void run() {
                 mPhotoDao.addPhoto(photo);
-                callback.onPhotoSaved(photo);
             }
         });
     }

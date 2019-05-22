@@ -4,13 +4,17 @@ import android.arch.persistence.room.Dao;
 import android.arch.persistence.room.Insert;
 import android.arch.persistence.room.Query;
 
+import java.util.Date;
 import java.util.List;
 
 @Dao
 public interface PhotoDao {
     @Insert
-    public void addPhoto(Photo photo);
+    void addPhoto(Photo photo);
+
+    @Query("select * from photo where dateTime between :minDate and :maxDate and comment like :keyword")
+    List<Photo> getPhotos(String minDate, String maxDate, String keyword);
 
     @Query("select * from photo")
-    public List<Photo> getPhotos();
+    List<Photo> getPhotos();
 }

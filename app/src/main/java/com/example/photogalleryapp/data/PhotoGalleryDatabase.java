@@ -5,7 +5,7 @@ import android.arch.persistence.room.Room;
 import android.arch.persistence.room.RoomDatabase;
 import android.content.Context;
 
-@Database(entities = {Photo.class}, version = 1)
+@Database(entities = {Photo.class}, version = 3)
 public abstract class PhotoGalleryDatabase extends RoomDatabase {
     private static PhotoGalleryDatabase INSTANCE;
 
@@ -18,6 +18,7 @@ public abstract class PhotoGalleryDatabase extends RoomDatabase {
             if (INSTANCE == null) {
                 INSTANCE = Room.databaseBuilder(context.getApplicationContext(),
                         PhotoGalleryDatabase.class, "photodb")
+                        .fallbackToDestructiveMigration()
                         .build();
             }
 

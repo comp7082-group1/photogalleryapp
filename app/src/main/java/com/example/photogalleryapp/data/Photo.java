@@ -5,11 +5,20 @@ import android.arch.persistence.room.PrimaryKey;
 
 @Entity
 public class Photo {
-    @PrimaryKey
+    @PrimaryKey(autoGenerate = true)
     private int id;
     private String path;
     private String dateTime;
     private String coordinates;
+    private String comment;
+
+    public String getComment() {
+        return comment;
+    }
+
+    public void setComment(String comment) {
+        this.comment = comment;
+    }
 
     public String getDateTime() {
         return dateTime;

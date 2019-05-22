@@ -3,6 +3,7 @@ package com.example.photogalleryapp.mainactivity;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.location.Location;
 
 public interface MainActivityContract {
@@ -13,6 +14,16 @@ public interface MainActivityContract {
         void startActivityForResult(int requestCode);
         Object getSystemService(String locationService);
         Activity getActivity();
+
+        String getCommentText();
+
+        void setCommentText(String comment);
+
+        void setImageBitmap(Bitmap decodeFile);
+
+        void setLocation(String coordinates);
+
+        void setTimeStamp(String dateTime);
     }
     interface Presenter{
         void initPresenter();

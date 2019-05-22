@@ -3,6 +3,7 @@ package com.example.photogalleryapp.mainactivity;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.v7.app.AppCompatActivity;
@@ -114,5 +115,38 @@ public class MainActivity extends AppCompatActivity implements MainActivityContr
     @Override
     public Activity getActivity() {
         return this;
+    }
+
+    @Override
+    public String getCommentText() {
+        TextView commentView = findViewById (R.id.main_CaptionEditText);
+        String comment;
+        comment = commentView.getText().toString();
+        System.out.println(comment);
+        return comment;
+    }
+
+    @Override
+    public void setCommentText(String comment) {
+        TextView commentView = findViewById(R.id.main_CaptionEditText);
+        commentView.setText(comment);
+    }
+
+    @Override
+    public void setImageBitmap(Bitmap decodeFile) {
+        ImageView iv = findViewById(R.id.main_imageView);
+        iv.setImageBitmap(decodeFile);
+    }
+
+    @Override
+    public void setLocation(String coordinates) {
+        TextView locationView = findViewById(R.id.main_locationText);
+        locationView.setText(coordinates);
+    }
+
+    @Override
+    public void setTimeStamp(String timestamp) {
+        TextView timeStampView = findViewById(R.id.main_TimeStamp);
+        timeStampView.setText(timestamp);
     }
 }

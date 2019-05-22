@@ -1,15 +1,11 @@
-package com.example.photogalleryapp;
+package com.example.photogalleryapp.data;
 
 import com.example.photogalleryapp.data.Photo;
 
 import java.util.List;
 
 public interface PhotoDataSource {
-    public interface GetPhotoCallback{
-        void onDataNotAvailable();
-
+    interface GetPhotoCallback{
         void onPhotosLoaded(List<Photo> photos);
-
-        void onPhotoSaved(Photo photo);
     }
 }
