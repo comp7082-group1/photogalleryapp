@@ -1,6 +1,4 @@
-package com.example.photogalleryapp.data;
-
-import com.example.photogalleryapp.data.Photo;
+package com.example.data;
 
 import java.util.List;
 

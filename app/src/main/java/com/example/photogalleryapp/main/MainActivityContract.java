@@ -1,19 +1,16 @@
-package com.example.photogalleryapp.mainactivity;
+package com.example.photogalleryapp.main;
 
-import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.location.Location;
 
 public interface MainActivityContract {
-    interface View{
+    interface View {
         void initView();
+
         void refreshVisibility(boolean isGalleryEmpty);
-        <T extends android.view.View> T findViewById(int id);
-        void startActivityForResult(int requestCode);
-        Object getSystemService(String locationService);
-        Activity getActivity();
+
+//        void startActivityForResult(int requestCode);
 
         String getCommentText();
 
@@ -24,12 +21,29 @@ public interface MainActivityContract {
         void setLocation(String coordinates);
 
         void setTimeStamp(String dateTime);
+
+        void showLongText(String text);
+
+        void searchOnClick(int requestCode);
+
+        void browseOnClick(int browseActivityRequestCode);
+
+        void snapOnClick(int requestImageCapture);
     }
-    interface Presenter{
+
+    interface Presenter {
         void initPresenter();
+
         void onClick(android.view.View view);
-        void filteredOnClick(android.view.View view);
+
         void onActivityResult(int requestCode, int resultCode, Intent data);
+
         void setCurrentLocation(Location location);
+
+        void searchOnClick(android.view.View v);
+
+        void browseOnClick(android.view.View v);
+
+        void snapOnClick(android.view.View v);
     }
 }

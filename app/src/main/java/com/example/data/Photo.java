@@ -1,4 +1,4 @@
-package com.example.photogalleryapp.data;
+package com.example.data;
 
 import android.arch.persistence.room.Entity;
 import android.arch.persistence.room.PrimaryKey;

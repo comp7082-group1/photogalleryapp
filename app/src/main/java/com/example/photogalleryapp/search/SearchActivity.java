@@ -1,4 +1,4 @@
-package com.example.photogalleryapp;
+package com.example.photogalleryapp.search;
 
 import android.app.DatePickerDialog;
 import android.content.Intent;
@@ -6,10 +6,11 @@ import android.support.v4.app.DialogFragment;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.Button;
 import android.widget.DatePicker;
-import android.widget.EditText;
 import android.widget.TextView;
+
+import com.example.photogalleryapp.main.DatePickerFragment;
+import com.example.photogalleryapp.R;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;

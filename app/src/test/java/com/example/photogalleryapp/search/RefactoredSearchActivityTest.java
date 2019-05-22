@@ -1,4 +1,4 @@
-package com.example.search;
+package com.example.photogalleryapp.search;
 
 import org.junit.Test;
 

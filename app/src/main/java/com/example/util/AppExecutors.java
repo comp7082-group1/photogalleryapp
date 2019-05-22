@@ -1,4 +1,4 @@
-package com.example.photogalleryapp.util;
+package com.example.util;
 
 
 import android.os.Handler;

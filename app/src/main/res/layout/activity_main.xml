@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".mainactivity.MainActivity">
+    tools:context=".main.MainActivity">
 
     <ImageView
         android:id="@+id/main_imageView"
@@ -52,7 +52,6 @@
         android:layout_marginTop="20dp"
         android:layout_marginEnd="8dp"
         android:layout_marginBottom="8dp"
-        android:onClick="snapPhoto"
         android:text="Snap"
         app:layout_constraintBottom_toTopOf="@+id/main_searchButton"
         app:layout_constraintEnd_toStartOf="@+id/main_RightButton"
@@ -134,5 +133,16 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/main_TimeStamp" />
+
+    <Button
+        android:id="@+id/main_BrowseButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="8dp"
+        android:text="Browse"
+        app:layout_constraintBottom_toTopOf="@+id/main_searchButton"
+        app:layout_constraintTop_toBottomOf="@+id/main_LeftButton"
+        tools:layout_editor_absoluteX="35dp" />
 
 </android.support.constraint.ConstraintLayout>

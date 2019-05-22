@@ -1,22 +1,25 @@
-package com.example.photogalleryapp.mainactivity;
+package com.example.photogalleryapp.main;
 
-import android.app.Activity;
+import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
+import android.location.LocationManager;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.photogalleryapp.R;
-import com.example.photogalleryapp.SearchActivity;
-
-import static com.example.photogalleryapp.mainactivity.MainActivityPresenter.REQUEST_IMAGE_CAPTURE;
+import com.example.photogalleryapp.search.SearchActivity;
+import com.example.photogalleryapp.browse.BrowseActivity;
 
 public class MainActivity extends AppCompatActivity implements MainActivityContract.View {
 
@@ -31,18 +34,44 @@ public class MainActivity extends AppCompatActivity implements MainActivityContr
         Button btnRight = findViewById(R.id.main_RightButton);
         Button btnSearch = findViewById(R.id.main_searchButton);
         Button submitComment = findViewById(R.id.main_CommentButton);
+        Button btnBrowse = findViewById(R.id.main_BrowseButton);
+        Button btnSnap = findViewById(R.id.main_SnapButton);
 
-        View.OnClickListener listener = new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                mPhotoPresenter.onClick(v);
-            }
-        };
-        btnLeft.setOnClickListener(listener);
-        btnRight.setOnClickListener(listener);
-        btnSearch.setOnClickListener(filterListener);
-        submitComment.setOnClickListener(listener);
+        btnLeft.setOnClickListener(onClickListener);
+        btnRight.setOnClickListener(onClickListener);
+        submitComment.setOnClickListener(onClickListener);
+        btnSearch.setOnClickListener(searchClickListener);
+        btnBrowse.setOnClickListener(browseClickListener);
+        btnSnap.setOnClickListener(snapClickListener);
     }
+
+    View.OnClickListener snapClickListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            mPhotoPresenter.snapOnClick(v);
+        }
+    };
+
+    View.OnClickListener browseClickListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            mPhotoPresenter.browseOnClick(v);
+        }
+    };
+
+    View.OnClickListener onClickListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            mPhotoPresenter.onClick(v);
+        }
+    };
+
+    View.OnClickListener searchClickListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            mPhotoPresenter.searchOnClick(v);
+        }
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,13 +80,24 @@ public class MainActivity extends AppCompatActivity implements MainActivityContr
 
         mPhotoPresenter = new MainActivityPresenter(this);
         mPhotoPresenter.initPresenter();
-    }
 
-    private View.OnClickListener filterListener = new View.OnClickListener() {
-        public void onClick(View v) {
-            mPhotoPresenter.filteredOnClick(v);
+        LocationManager locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+        if (ActivityCompat.checkSelfPermission(this,
+                Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
+                && ActivityCompat.checkSelfPermission(
+                this,
+                Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            // no location permissions
+            ActivityCompat.requestPermissions(this,
+                    new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
+                    5);
+            ActivityCompat.requestPermissions(this,
+                    new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
+                    6);
+        } else {
+            locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, mPhotoPresenter);
         }
-    };
+    }
 
     @Override
     public void refreshVisibility(boolean isGalleryEmpty){
@@ -70,7 +110,6 @@ public class MainActivity extends AppCompatActivity implements MainActivityContr
         EditText caption = findViewById(R.id.main_CaptionEditText);
 
         if (isGalleryEmpty) {
-            // what is resultFlag?
             iv.setVisibility(View.INVISIBLE);
             dateView.setVisibility(View.INVISIBLE);
             noResult.setVisibility(View.VISIBLE);
@@ -90,31 +129,10 @@ public class MainActivity extends AppCompatActivity implements MainActivityContr
         }
     }
 
-
-    public void snapPhoto(View view) {
-        Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-
-        // Ensure that there's a camera activity to handle the intent
-        if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
-            startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE);
-        }
-    }
-
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         mPhotoPresenter.onActivityResult(requestCode, resultCode, data);
 
-    }
-
-    @Override
-    public void startActivityForResult(int requestCode) {
-        Intent i = new Intent(MainActivity.this, SearchActivity.class);
-        startActivityForResult(i, requestCode);
-    }
-
-    @Override
-    public Activity getActivity() {
-        return this;
     }
 
     @Override
@@ -148,5 +166,31 @@ public class MainActivity extends AppCompatActivity implements MainActivityContr
     public void setTimeStamp(String timestamp) {
         TextView timeStampView = findViewById(R.id.main_TimeStamp);
         timeStampView.setText(timestamp);
+    }
+
+    @Override
+    public void showLongText(String text) {
+        Toast.makeText(this, text, Toast.LENGTH_LONG).show();
+    }
+
+    @Override
+    public void searchOnClick(int requestCode) {
+        Intent i = new Intent(this, SearchActivity.class);
+        startActivityForResult(i, requestCode);
+    }
+
+    @Override
+    public void browseOnClick(int browseActivityRequestCode) {
+        Intent i = new Intent(this, BrowseActivity.class);
+        startActivityForResult(i, browseActivityRequestCode);
+    }
+
+    @Override
+    public void snapOnClick(int requestImageCapture) {
+        Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        // Ensure that there's a camera activity to handle the intent
+        if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
+            startActivityForResult(takePictureIntent, requestImageCapture);
+        }
     }
 }

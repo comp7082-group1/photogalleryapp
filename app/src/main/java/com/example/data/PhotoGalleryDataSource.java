@@ -1,8 +1,8 @@
-package com.example.photogalleryapp.data;
+package com.example.data;
 
 import android.support.annotation.NonNull;
 
-import com.example.photogalleryapp.util.AppExecutors;
+import com.example.util.AppExecutors;
 
 import java.util.Date;
 import java.util.List;
