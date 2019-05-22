@@ -12,7 +12,7 @@ import java.util.ArrayList;
 import java.util.Date;
 
 //accepts arraylist of filepaths and filters returning arraylist of filepaths
-public class RefactoredSearchActivity {
+public class SearchUtils {
     protected ArrayList<String> photoGallery = null;
     protected Date minDate = new Date(Long.MIN_VALUE);
     protected Date maxDate = new Date(Long.MAX_VALUE);

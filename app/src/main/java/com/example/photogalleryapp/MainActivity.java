@@ -1,6 +1,8 @@
 package com.example.photogalleryapp;
 
 import android.Manifest;
+import android.arch.persistence.room.Room;
+import android.arch.persistence.room.RoomDatabase;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -24,6 +26,8 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.example.data.local.PhotoDatabase;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -50,6 +54,9 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
     protected String currentPhotoPath = null;
     protected Boolean resultFlag = Boolean.TRUE;
     Location currentLocation = null;
+
+    private static final String DATABASE_NAME = "photos_db";
+    private PhotoDatabase photoDatabase;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -93,6 +100,7 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
             locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, this);
         }
 
+        photoDatabase = PhotoDatabase.getInstance(getApplicationContext());
 
     }
 
