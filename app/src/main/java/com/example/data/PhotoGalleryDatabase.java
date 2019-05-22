@@ -5,7 +5,7 @@ import android.arch.persistence.room.Room;
 import android.arch.persistence.room.RoomDatabase;
 import android.content.Context;
 
-@Database(entities = {Photo.class}, version = 3)
+@Database(entities = {Photo.class}, version = 4)
 public abstract class PhotoGalleryDatabase extends RoomDatabase {
     private static PhotoGalleryDatabase INSTANCE;
 

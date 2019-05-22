@@ -1,17 +1,14 @@
 package com.example.photogalleryapp.browse;
 
-import android.graphics.BitmapFactory;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.BaseAdapter;
-import android.widget.ImageView;
-import android.widget.TextView;
 
 import com.example.data.Photo;
 import com.example.data.PhotoDataSource;
 import com.example.data.PhotoGalleryDataSource;
 import com.example.data.PhotoGalleryDatabase;
-import com.example.photogalleryapp.R;
 import com.example.util.AppExecutors;
 
 import java.util.List;
@@ -40,6 +37,13 @@ public class BrowseActivityPresenter implements BrowseActivityContract.Presenter
     @Override
     public void getPhotos(PhotoDataSource.GetPhotoCallback callback) {
         callback.onPhotosLoaded(mPhotos);
+    }
+
+    @Override
+    public void listItemOnItemClick(AdapterView<?> parent, View view, int position, long id) {
+        Photo photo = mPhotos.get(position);
+        String coordinates = photo.getLatitude() + "," + photo.getLongitude();
+        mBrowseActivityView.launchGoogleMaps(coordinates);
     }
 
     class CustomAdapter extends BaseAdapter {

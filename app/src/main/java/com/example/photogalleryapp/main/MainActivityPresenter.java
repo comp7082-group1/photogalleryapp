@@ -145,25 +145,24 @@ public class MainActivityPresenter implements PhotoDataSource.GetPhotoCallback, 
             photo.setDateTime(dateTimeFormat.format(new Date()));
             // location
             if( mCurrentLocation != null) {
-                String latitude = dec2DMS(mCurrentLocation.getLatitude());
-                String longitude = dec2DMS(mCurrentLocation.getLongitude());
-                photo.setCoordinates("Lat: " + latitude + " Long: " + longitude);
+                photo.setLatitude(Double.toString(mCurrentLocation.getLatitude()));
+                photo.setLongitude(Double.toString(mCurrentLocation.getLongitude()));
             }
             // save
             mDataSource.savePhoto(photo);
         }
     }
 
-    // convert coordinates to exif-compatible format
-    private String dec2DMS(double coord) {
-        coord = coord > 0 ? coord : -coord;  // -105.9876543 -> 105.9876543
-        String sOut = Integer.toString((int) coord) + "/1,";   // 105/1,
-        coord = (coord % 1) * 60;         // .987654321 * 60 = 59.259258
-        sOut = sOut + Integer.toString((int) coord) + "/1,";   // 105/1,59/1,
-        coord = (coord % 1) * 60000;             // .259258 * 60000 = 15555
-        sOut = sOut + Integer.toString((int) coord) + "/1000";   // 105/1,59/1,15555/1000
-        return sOut;
-    }
+//    // convert coordinates to exif-compatible format
+//    private String dec2DMS(double coord) {
+//        coord = coord > 0 ? coord : -coord;  // -105.9876543 -> 105.9876543
+//        String sOut = Integer.toString((int) coord) + "/1,";   // 105/1,
+//        coord = (coord % 1) * 60;         // .987654321 * 60 = 59.259258
+//        sOut = sOut + Integer.toString((int) coord) + "/1,";   // 105/1,59/1,
+//        coord = (coord % 1) * 60000;             // .259258 * 60000 = 15555
+//        sOut = sOut + Integer.toString((int) coord) + "/1000";   // 105/1,59/1,15555/1000
+//        return sOut;
+//    }
 
     public void displayPhoto(Photo photo) {
         if (photo.getPath() != null) {
@@ -172,7 +171,7 @@ public class MainActivityPresenter implements PhotoDataSource.GetPhotoCallback, 
             // display comment
             mMainActivityView.setCommentText(photo.getComment());
             // display lat/long
-            mMainActivityView.setLocation(photo.getCoordinates());
+            mMainActivityView.setLocation(photo.getLatitude());
             // display timestamp
             mMainActivityView.setTimeStamp(photo.getDateTime());
         }

@@ -9,7 +9,25 @@ public class Photo {
     private int id;
     private String path;
     private String dateTime;
-    private String coordinates;
+    private String latitude;
+
+    public String getLatitude() {
+        return latitude;
+    }
+
+    public void setLatitude(String latitude) {
+        this.latitude = latitude;
+    }
+
+    public String getLongitude() {
+        return longitude;
+    }
+
+    public void setLongitude(String longitude) {
+        this.longitude = longitude;
+    }
+
+    private String longitude;
     private String comment;
 
     public String getComment() {
@@ -26,14 +44,6 @@ public class Photo {
 
     public void setDateTime(String dateTime) {
         this.dateTime = dateTime;
-    }
-
-    public String getCoordinates() {
-        return coordinates;
-    }
-
-    public void setCoordinates(String coordinates) {
-        this.coordinates = coordinates;
     }
 
     public int getId() {

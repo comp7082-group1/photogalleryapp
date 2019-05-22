@@ -1,9 +1,12 @@
 package com.example.photogalleryapp.browse;
 
+import android.content.Intent;
 import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -37,6 +40,14 @@ public class BrowseActivity extends AppCompatActivity implements BrowseActivityC
             ListView listView = findViewById(R.id.browse_ListView);
             BrowseActivityPresenter.CustomAdapter adapter = mPresenter.new CustomAdapter();
             listView.setAdapter(adapter);
+            listView.setOnItemClickListener(itemOnItemClickListener);
+        }
+    };
+
+    AdapterView.OnItemClickListener itemOnItemClickListener = new AdapterView.OnItemClickListener() {
+        @Override
+        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+            mPresenter.listItemOnItemClick(parent, view, position, id);
         }
     };
 
@@ -52,8 +63,22 @@ public class BrowseActivity extends AppCompatActivity implements BrowseActivityC
         imageView.setImageBitmap(BitmapFactory.decodeFile(photo.getPath()));
         textViewComment.setText(photo.getComment());
         textViewDate.setText(photo.getDateTime());
-        textViewLocation.setText(photo.getCoordinates());
+        textViewLocation.setText(photo.getLatitude() + "," + photo.getLongitude());
 
         return gridItem;
+    }
+
+    @Override
+    public void launchGoogleMaps(String coordinates) {
+        // Create a Uri from an intent string. Use the result to create an Intent.
+        Uri gmmIntentUri = Uri.parse("geo:" + coordinates);
+
+        // Create an Intent from gmmIntentUri. Set the action to ACTION_VIEW
+        Intent mapIntent = new Intent(Intent.ACTION_VIEW, gmmIntentUri);
+        // Make the Intent explicit by setting the Google Maps package
+        mapIntent.setPackage("com.google.android.apps.maps");
+
+        // Attempt to start an activity that can handle the Intent
+        startActivity(mapIntent);
     }
 }
