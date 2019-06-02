@@ -1,0 +1,4 @@
+<resources>
+    <string name="app_name">photogal</string>
+    <string name="empty_not_saved">No photo was saved</string>
+</resources>
