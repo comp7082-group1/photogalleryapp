@@ -61,6 +61,7 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
     Date filterMinDate = new Date(Long.MIN_VALUE);
     Date filterMaxDate = new Date(Long.MAX_VALUE);
     private String filterKeyword = "";
+    private PhotoListAdapter adapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -72,8 +73,8 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
 
         RecyclerView recyclerView = findViewById(R.id.recyclerview);
 
-        final PhotoListAdapter adapter = new PhotoListAdapter(this);
-        adapter.setFilter(filterMinDate, filterMaxDate, filterKeyword);
+        adapter = new PhotoListAdapter(this);
+
         recyclerView.setAdapter(adapter);
         SnapHelper snapHelper = new PagerSnapHelper();
         recyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
@@ -227,8 +228,7 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
                     e.printStackTrace();
                 }
 
-                Intent i = new Intent(MainActivity.this, MainActivity.class);
-                startActivityForResult(i, 0);
+                adapter.setFilter(filterMinDate, filterMaxDate, filterKeyword);
                 //min and max date + keword are filter
             }
         }

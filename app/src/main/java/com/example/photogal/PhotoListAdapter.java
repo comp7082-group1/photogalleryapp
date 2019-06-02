@@ -128,7 +128,7 @@ public class PhotoListAdapter extends RecyclerView.Adapter<PhotoListAdapter.Phot
         int filePathLength = 0;
 
         if (mPhotos != null) {
-            mPhotos.get(0).getPath().length();
+            filePathLength = mPhotos.get(0).getPath().length();
 
 
             for (int i = 0; i < mPhotos.size(); i++) {
