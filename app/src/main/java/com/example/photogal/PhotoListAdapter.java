@@ -109,10 +109,6 @@ public class PhotoListAdapter extends RecyclerView.Adapter<PhotoListAdapter.Phot
             maxDate = new Date(Long.MAX_VALUE);
         }
 
-        if (keyword == null) {
-            keyword = "";
-        }
-
         List<PhotoEntity> filteredList = new ArrayList<PhotoEntity> ();
 
         DateFormat format = new SimpleDateFormat("yyyyMMdd");
@@ -126,13 +122,7 @@ public class PhotoListAdapter extends RecyclerView.Adapter<PhotoListAdapter.Phot
             for (int i = 0; i < mPhotos.size(); i++) {
                 String extension = mPhotos.get(i).getPath().substring(mPhotos.get(i).getPath().lastIndexOf("."));
                 Date fileDate = null;
-                String fileDateStr = mPhotos.get(i).getPath().substring(filePathLength - 32, filePathLength - 24);
-
-                try {
-                    fileDate = format.parse(fileDateStr);
-                } catch (ParseException e) {
-                    e.printStackTrace();
-                }
+                String fileDateStr;
 
                 ExifInterface exifInterface = null;
                 try {
@@ -142,7 +132,12 @@ public class PhotoListAdapter extends RecyclerView.Adapter<PhotoListAdapter.Phot
                 }
                 String comment;
                 comment = exifInterface.getAttribute(ExifInterface.TAG_USER_COMMENT);
-
+                fileDateStr = exifInterface.getAttribute(ExifInterface.TAG_DATETIME);
+                try {
+                    fileDate = format.parse(fileDateStr);
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }
 
                 if (fileDate == null) {
                     fileDate = new Date(System.currentTimeMillis());
@@ -154,7 +149,7 @@ public class PhotoListAdapter extends RecyclerView.Adapter<PhotoListAdapter.Phot
                         filteredList.add(mPhotos.get(i));
                         continue;
                     }
-                    if (keyword != null && comment != null) {
+                    if (!keyword.equals("") && !comment.equals("")) {
                         String commentLower = comment.toLowerCase();
                         String keywordLower = keyword.toLowerCase();
                         if (commentLower.contains(keywordLower)) {

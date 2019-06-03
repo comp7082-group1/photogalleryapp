@@ -95,7 +95,7 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
                 System.out.println(currentIndex);
                 if (currentIndex >= 0) {
                     currentPhotoPath = adapter.getPhotoPath(currentIndex);
-                    updateCard(currentPhotoPath);
+                    refreshCard();
                 }
 
             }
@@ -116,6 +116,8 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
 
             }
         });
+
+
 
         FloatingActionButton fab = findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -176,6 +178,7 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
         }
 
 
+        refreshCard();
     }
 
     @RequiresApi(api = Build.VERSION_CODES.KITKAT)
@@ -208,7 +211,7 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
                     // save image to disk
                     image = createImageFile(imageBitmap);
                     //save metadata
-                    String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
+                    String timeStamp = new SimpleDateFormat("yyyyMMdd").format(new Date());
 
                     String currentPhotoPath = image.getAbsolutePath();
                     if (currentLocation != null) {
@@ -329,6 +332,7 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
         String locationLong;
         String location;
         String date;
+        Button commentBtn = findViewById(R.id.commentButton);
         String comment = exif.getAttribute(ExifInterface.TAG_USER_COMMENT);
         System.out.println(exif.getAttribute(ExifInterface.TAG_USER_COMMENT));
         locationLat = exif.getAttribute(ExifInterface.TAG_GPS_LATITUDE);
@@ -339,11 +343,14 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
         mComment.setText(comment);
         mLocation.setText(location);
         mDate.setText(date);
+        commentBtn.setVisibility(View.VISIBLE);
 
 
     }
 
     public void refreshCard() {
+
+        listSize = adapter.getItemCount();
 
         if (listSize > 0) {
             currentIndex = layoutMan.findFirstCompletelyVisibleItemPosition();
