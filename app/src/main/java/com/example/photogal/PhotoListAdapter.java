@@ -102,24 +102,16 @@ public class PhotoListAdapter extends RecyclerView.Adapter<PhotoListAdapter.Phot
         return current.getPath();
     }
 
-    public void setFilter(Date minDate, Date maxDate, String keyword){
+    public int setFilteredPhotos(Date minDate, Date maxDate, String keyword) {
 
-        if (minDate != null && maxDate != null) {
-            filterMinDate = minDate;
-            filterMaxDate = maxDate;
+        if (minDate == null && maxDate == null) {
+            minDate = new Date(Long.MIN_VALUE);
+            maxDate = new Date(Long.MAX_VALUE);
         }
 
-        if (keyword != null) {
-            filterKeyword = keyword;
-        } else {
-            filterKeyword = "";
+        if (keyword == null) {
+            keyword = "";
         }
-
-            setFilteredPhotos(filterMinDate, filterMaxDate, filterKeyword);
-
-    }
-
-    public void setFilteredPhotos(Date minDate, Date maxDate, String keyword) {
 
         List<PhotoEntity> filteredList = new ArrayList<PhotoEntity> ();
 
@@ -176,6 +168,7 @@ public class PhotoListAdapter extends RecyclerView.Adapter<PhotoListAdapter.Phot
 
         mPhotos = filteredList;
         this.setPhotos(filteredList);
+        return filteredList.size();
 
     }
 

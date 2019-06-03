@@ -67,6 +67,8 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
     LifecycleOwner mainOwner = this;
     FloatingActionButton fabCancel;
 
+    private int listSize;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -225,11 +227,6 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
             }
 
             Toast.makeText(this, image.getAbsolutePath(), Toast.LENGTH_LONG).show();
-        } else {
-            Toast.makeText(
-                    getApplicationContext(),
-                    R.string.empty_not_saved,
-                    Toast.LENGTH_LONG).show();
         }
 
         if (requestCode == SEARCH_ACTIVITY_REQUEST_CODE) {
@@ -251,7 +248,7 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
                     e.printStackTrace();
                 }
 
-                adapter.setFilter(filterMinDate, filterMaxDate, filterKeyword);
+                listSize = adapter.setFilteredPhotos(filterMinDate, filterMaxDate, filterKeyword);
                 //min and max date + keword are filter
                 fabCancel.setVisibility(View.VISIBLE);
                 refreshCard();
@@ -347,12 +344,29 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
     }
 
     public void refreshCard() {
-        currentIndex = layoutMan.findFirstCompletelyVisibleItemPosition();
-        System.out.println(currentIndex);
-        if (currentIndex >= 0) {
-            currentPhotoPath = adapter.getPhotoPath(currentIndex);
-            updateCard(currentPhotoPath);
+
+        if (listSize > 0) {
+            currentIndex = layoutMan.findFirstCompletelyVisibleItemPosition();
+            System.out.println(currentIndex);
+            if (currentIndex >= 0) {
+                currentPhotoPath = adapter.getPhotoPath(currentIndex);
+                updateCard(currentPhotoPath);
+            }
+        } else {
+            noResult();
         }
+    }
+
+    public void noResult() {
+        EditText mComment= findViewById(R.id.comment);
+        TextView mLocation = findViewById(R.id.location);
+        TextView mDate = findViewById(R.id.date);
+        Button comment = findViewById(R.id.commentButton);
+
+        mComment.setText("");
+        mLocation.setText("");
+        mDate.setText("No Result");
+        comment.setVisibility(View.INVISIBLE);
     }
 
 }
