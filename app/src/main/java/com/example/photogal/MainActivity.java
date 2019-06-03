@@ -151,6 +151,7 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
                     }
                 });
                 fabCancel.setVisibility(View.INVISIBLE);
+                refreshCard();
             }
         });
 
@@ -253,6 +254,7 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
                 adapter.setFilter(filterMinDate, filterMaxDate, filterKeyword);
                 //min and max date + keword are filter
                 fabCancel.setVisibility(View.VISIBLE);
+                refreshCard();
             }
         }
     }
@@ -342,6 +344,15 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
         mDate.setText(date);
 
 
+    }
+
+    public void refreshCard() {
+        currentIndex = layoutMan.findFirstCompletelyVisibleItemPosition();
+        System.out.println(currentIndex);
+        if (currentIndex >= 0) {
+            currentPhotoPath = adapter.getPhotoPath(currentIndex);
+            updateCard(currentPhotoPath);
+        }
     }
 
 }
