@@ -59,4 +59,16 @@ So, we are leaving the template code in. -->
         app:layout_anchor="@+id/include"
         app:layout_anchorGravity="start|bottom" />
 
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/fabCancel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|end"
+        android:layout_margin="16dp"
+        android:clickable="true"
+        android:src="@drawable/ic_cancel_black_24dp"
+        android:visibility="invisible"
+        app:layout_anchor="@+id/include"
+        app:layout_anchorGravity="start|bottom" />
+
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

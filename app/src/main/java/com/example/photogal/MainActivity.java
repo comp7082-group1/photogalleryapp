@@ -1,6 +1,7 @@
 package com.example.photogal;
 
 import android.Manifest;
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -23,6 +24,7 @@ import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
+import androidx.lifecycle.LifecycleOwner;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -62,6 +64,8 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
     Date filterMaxDate = new Date(Long.MAX_VALUE);
     private String filterKeyword = "";
     private PhotoListAdapter adapter;
+    LifecycleOwner mainOwner = this;
+    FloatingActionButton fabCancel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -133,6 +137,23 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
             }
         });
 
+        fabCancel = findViewById(R.id.fabCancel);
+        fabCancel.setOnClickListener(new View.OnClickListener() {
+            @SuppressLint("RestrictedApi")
+            @Override
+            public void onClick(View view) {
+                mPhotoViewModel.getAllPhotos().observe(mainOwner, new Observer<List<PhotoEntity>>() {
+                    @Override
+                    public void onChanged(@Nullable final List<PhotoEntity> photos) {
+                        // Update the cached copy of the words in the adapter.
+                        adapter.setPhotos(photos);
+
+                    }
+                });
+                fabCancel.setVisibility(View.INVISIBLE);
+            }
+        });
+
         Button mButton = findViewById(R.id.commentButton);
         mButton.setOnClickListener(new View.OnClickListener(){
             @Override
@@ -169,6 +190,7 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
         return image;
     }
 
+    @SuppressLint("RestrictedApi")
     @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -230,6 +252,7 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
 
                 adapter.setFilter(filterMinDate, filterMaxDate, filterKeyword);
                 //min and max date + keword are filter
+                fabCancel.setVisibility(View.VISIBLE);
             }
         }
     }
