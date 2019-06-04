@@ -386,7 +386,7 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
 
     }
 
-    public void refreshCard() throws ParseException {
+    public void refreshCard() throws ParseException, IndexOutOfBoundsException {
 
         listSize = adapter.getItemCount();
 
@@ -394,7 +394,13 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
             currentIndex = layoutMan.findFirstCompletelyVisibleItemPosition();
             System.out.println(currentIndex);
             if (currentIndex >= 0) {
-                currentPhotoPath = adapter.getPhotoPath(currentIndex);
+                try {
+                    currentPhotoPath = adapter.getPhotoPath(currentIndex);
+                } catch (IndexOutOfBoundsException e) {
+                    currentIndex = 0;
+                    currentPhotoPath = adapter.getPhotoPath(currentIndex);
+                }
+
                 updateCard(currentPhotoPath);
             }
         } else {
