@@ -95,7 +95,11 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
                 System.out.println(currentIndex);
                 if (currentIndex >= 0) {
                     currentPhotoPath = adapter.getPhotoPath(currentIndex);
-                    refreshCard();
+                    try {
+                        refreshCard();
+                    } catch (ParseException e) {
+                        e.printStackTrace();
+                    }
                 }
 
             }
@@ -155,7 +159,11 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
                     }
                 });
                 fabCancel.setVisibility(View.INVISIBLE);
-                refreshCard();
+                try {
+                    refreshCard();
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }
             }
         });
 
@@ -178,7 +186,11 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
         }
 
 
-        refreshCard();
+        try {
+            refreshCard();
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
     }
 
     @RequiresApi(api = Build.VERSION_CODES.KITKAT)
@@ -254,7 +266,11 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
                 listSize = adapter.setFilteredPhotos(filterMinDate, filterMaxDate, filterKeyword);
                 //min and max date + keword are filter
                 fabCancel.setVisibility(View.VISIBLE);
-                refreshCard();
+                try {
+                    refreshCard();
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }
             }
         }
     }
@@ -313,7 +329,7 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
 
     }
 
-    public void updateCard(String path) {
+    public void updateCard(String path) throws ParseException {
 
         EditText mComment= findViewById(R.id.comment);
         TextView mLocation = findViewById(R.id.location);
@@ -331,24 +347,26 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
         String locationLat;
         String locationLong;
         String location;
-        String date;
+        String dateString;
         Button commentBtn = findViewById(R.id.commentButton);
         String comment = exif.getAttribute(ExifInterface.TAG_USER_COMMENT);
         System.out.println(exif.getAttribute(ExifInterface.TAG_USER_COMMENT));
         locationLat = exif.getAttribute(ExifInterface.TAG_GPS_LATITUDE);
         locationLong = exif.getAttribute(ExifInterface.TAG_GPS_DEST_LONGITUDE);
         location = locationLat + " " + locationLong;
-        date = exif.getAttribute(ExifInterface.TAG_DATETIME);
+        dateString = exif.getAttribute(ExifInterface.TAG_DATETIME);
+        SimpleDateFormat printFormat = new SimpleDateFormat("yyyy/MM/dd");
+        Date date = format.parse(dateString);
 
         mComment.setText(comment);
         mLocation.setText(location);
-        mDate.setText(date);
+        mDate.setText(printFormat.format(date));
         commentBtn.setVisibility(View.VISIBLE);
 
 
     }
 
-    public void refreshCard() {
+    public void refreshCard() throws ParseException {
 
         listSize = adapter.getItemCount();
 
