@@ -178,9 +178,16 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
             }
         });
 
+
         locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             // no location permissions
+            ActivityCompat.requestPermissions(this,
+                    new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
+                    5);
+            ActivityCompat.requestPermissions(this,
+                    new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
+                    6);
         } else {
             locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, this);
         }
@@ -229,6 +236,7 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
                     if (currentLocation != null) {
                         saveAttribute(currentPhotoPath, ExifInterface.TAG_GPS_LATITUDE, dec2DMS(currentLocation.getLatitude()));
                         saveAttribute(currentPhotoPath, ExifInterface.TAG_GPS_LONGITUDE, dec2DMS(currentLocation.getLongitude()));
+                        System.out.println(dec2DMS(currentLocation.getLongitude()));
                     }
                     saveAttribute(currentPhotoPath, ExifInterface.TAG_DATETIME, timeStamp);
                     saveAttribute(currentPhotoPath, ExifInterface.TAG_USER_COMMENT, "");
@@ -352,8 +360,9 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
         String comment = exif.getAttribute(ExifInterface.TAG_USER_COMMENT);
         System.out.println(exif.getAttribute(ExifInterface.TAG_USER_COMMENT));
         locationLat = exif.getAttribute(ExifInterface.TAG_GPS_LATITUDE);
-        locationLong = exif.getAttribute(ExifInterface.TAG_GPS_DEST_LONGITUDE);
-        location = locationLat + " " + locationLong;
+        locationLong = exif.getAttribute(ExifInterface.TAG_GPS_LONGITUDE);
+        System.out.println(locationLong);
+        location = "Lat: " + locationLat + "\nLong: " + locationLong;
         dateString = exif.getAttribute(ExifInterface.TAG_DATETIME);
         SimpleDateFormat printFormat = new SimpleDateFormat("yyyy/MM/dd");
         Date date = format.parse(dateString);
