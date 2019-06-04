@@ -120,6 +120,7 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
                 // Update the cached copy of the words in the adapter.
                 adapter.setPhotos(photos);
 
+                layoutMan.scrollToPosition(adapter.getItemCount()-1);
             }
         });
 
@@ -157,6 +158,7 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
                     public void onChanged(@Nullable final List<PhotoEntity> photos) {
                         // Update the cached copy of the words in the adapter.
                         adapter.setPhotos(photos);
+
 
                     }
                 });
