@@ -2,6 +2,7 @@ package com.example.photogal;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -15,6 +16,7 @@ import android.os.Bundle;
 import android.provider.MediaStore;
 import android.util.Log;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -167,6 +169,14 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
             }
         });
 
+        final InputMethodManager imm = (InputMethodManager) this.getSystemService(Activity.INPUT_METHOD_SERVICE);
+        //Find the currently focused view, so we can grab the correct window token from it.
+        View view = this.getCurrentFocus();
+        //If no view currently has focus, create a new one, just so we can grab a window token from it
+        if (view == null) {
+            view = new View(this);
+        }
+
         Button mButton = findViewById(R.id.commentButton);
         mButton.setOnClickListener(new View.OnClickListener(){
             @Override
@@ -175,6 +185,7 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
                 EditText comment = findViewById(R.id.comment);
                 String scomment = comment.getText().toString();
                 saveAttribute(currentPhotoPath, ExifInterface.TAG_USER_COMMENT, scomment);
+                imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
             }
         });
 
